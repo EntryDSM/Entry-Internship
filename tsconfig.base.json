@@ -5,7 +5,7 @@
     "emitDeclarationOnly": true,
     "importHelpers": true,
     "isolatedModules": true,
-    "lib": ["es2022", "DOM"],
+    "lib": ["es2022", "DOM", "ES2015", "ESNext"],
     "module": "esnext",
     "moduleResolution": "bundler",
     "noEmitOnError": true,
@@ -17,13 +17,14 @@
     "strict": true,
     "target": "es2022",
     "customConditions": ["development"],
+    "forceConsistentCasingInFileNames": false,
     "baseUrl": ".",
     "paths": {
       "@entry/design-token/*": ["libs/design-token/src/*"],
       "@entry/hooks/*": ["libs/hooks/src/*"],
+      "@entry/types/*": ["lib/types/src/*"],
       "@entry/ui/*": ["libs/ui/src/*"],
-      "@entry/utils/*": ["libs/utils/src/*"],
-      "@entry/types/*": ["lib/types/src/*"]
+      "@entry/utils/*": ["libs/utils/src/*"]
     }
   }
 }

@@ -1,3 +1,4 @@
 export * from './Plus';
 export * from './Check';
 export * from './icons';
+export { default as TitleImgIcon } from './TitleImg.svg';
