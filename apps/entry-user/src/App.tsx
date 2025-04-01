@@ -1,5 +1,12 @@
-function App() {
-  return <div></div>;
-}
+import { GlobalStyle } from '@entry/design-token';
+import { RouterProvider } from 'react-router-dom';
+import { Router } from './Router';
 
-export default App;
+export const App = () => {
+  return (
+    <>
+      <GlobalStyle />
+      <RouterProvider router={Router} />
+    </>
+  );
+};

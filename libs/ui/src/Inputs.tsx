@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 import { Label } from './Label';
 
 type InputType = {
@@ -55,7 +55,7 @@ const Input = styled.input`
   padding-left: 24px;
   font-size: 16px;
   font-weight: 500;
-  border: 1px solid ${color.gray[200]};
+  border: 1px solid ${colors.gray[200]};
   border-radius: 12px;
-  color: ${color.gray[800]};
+  color: ${colors.gray[800]};
 `;

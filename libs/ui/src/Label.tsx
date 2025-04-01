@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 
 type LabelType = {
   isWrite?: boolean;
@@ -34,16 +34,16 @@ export const Label = ({
 const LabelText = styled.label`
   font-size: 16px;
   font-weight: 500;
-  color: ${color.gray[800]};
+  color: ${colors.gray[800]};
 `;
 
 const LabelInput = styled.input`
   width: 100%;
   font-size: 16px;
   font-weight: 500;
-  color: ${color.gray[800]};
+  color: ${colors.gray[800]};
   &::placeholder {
-    color: ${color.gray[100]};
+    color: ${colors.gray[100]};
     font-size: 16px;
     font-weight: 500;
   }

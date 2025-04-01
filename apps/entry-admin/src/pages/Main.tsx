@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 import { useNavigate } from 'react-router-dom';
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 import { ImgStore } from '@entry/ui';
 import { IconStore } from '@entry/ui';
-import { CarrerItem } from '../components/mainCarrer';
+import { CarrerItem } from '../components';
 
 export const Main = () => {
   return (
@@ -23,6 +23,7 @@ export const Main = () => {
       </TitleContainer>
       <CarrersContainer>
         <CarrerTitle>채용 공고</CarrerTitle>
+
         <CarrerItem />
         <CarrerItem />
         <CarrerItem />
@@ -82,7 +83,7 @@ const CarrerTitle = styled.div`
 
 const DSM = styled.div`
   font-size: 30px;
-  color: ${color.green[500]};
+  color: ${colors.green[500]};
   padding: 0 5px 0 0;
 `;
 

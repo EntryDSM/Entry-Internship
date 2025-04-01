@@ -1,4 +1,4 @@
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 import styled from '@emotion/styled';
 import { Plus } from './assets';
 
@@ -22,7 +22,7 @@ export const Button = ({
       onClick={onClick}
       onChange={onChange}
     >
-      {children ? children : <Plus color="#ffffff" size={22} />}
+      {children ? children : <Plus color={colors.gray[50]} size={22} />}
     </ButtonContainer>
   );
 };
@@ -33,10 +33,15 @@ const ButtonContainer = styled.button<Pick<ButtonType, 'userType'>>`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${color.extra.white};
+  color: ${colors.extra.white};
   font-size: 25px;
   font-weight: 700;
   background-color: ${({ userType }) =>
-    userType === 'admin' ? color.green[500] : color.orange[500]};
+    userType === 'admin' ? colors.green[500] : colors.orange[500]};
   border-radius: 20px;
+  &:hover {
+    transition: 0.4s ease-in-out;
+    background-color: ${({ userType }) =>
+      userType === 'admin' ? colors.green[600] : colors.orange[600]};
+  }
 `;
