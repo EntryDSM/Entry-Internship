@@ -1,3 +1,4 @@
 export * from './ApplicationWriting';
-export * from './Main';
+export * from './Post';
 export * from './DetailPost';
+export * from './Main';

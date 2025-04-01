@@ -1,146 +1,193 @@
 import styled from '@emotion/styled';
-import { useNavigate } from 'react-router-dom';
+import { mainBanner, mainIpad } from '@entry/ui';
 import { colors } from '@entry/design-token';
-import { ImgStore } from '../components';
-import { CarrerItem } from '../components';
-import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const Main = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
-  const [datas, setDatas] = useState<
-    {
-      title: string;
-      keyWord: string[];
-      isFocusRecruit: boolean;
-      isImportant: boolean;
-    }[]
-  >([
-    {
-      title: '피자 배달부 모집 ( 정규직 )',
-      keyWord: ['개발', 'GO 언어'],
-      isFocusRecruit: true,
-      isImportant: true,
-    },
-    {
-      title: '피자 배달부 모집 ( 정규직 )',
-      keyWord: ['개발', 'GO 언어'],
-      isFocusRecruit: false,
-      isImportant: true,
-    },
-    {
-      title: '피자 배달부 모집 ( 정규직 )',
-      keyWord: ['개발', 'GO 언어'],
-      isFocusRecruit: false,
-      isImportant: true,
-    },
-    {
-      title: '피자 배달부 모집 ( 정규직 )',
-      keyWord: ['개발', 'GO 언어'],
-      isFocusRecruit: false,
-      isImportant: true,
-    },
-  ]);
-
+  const postNavClick = () => {
+    navigate('/post');
+  };
   return (
-    <MainContainer>
-      <TitleContainer>
-        <ImgStore name="TitleImg" width="100vw" height="300px" />
-        <MentContainer>
-          <Top>
-            <LogoImg>
-              <ImgStore name="LogoOrange" width="30px" />
-            </LogoImg>
-            <TopMent>
-              <There>Entry</There>
-              <DSM>DSM</DSM>
-              <There>에서</There>
-            </TopMent>
-          </Top>
-          <BottomMent>다음과 같은 인재들을 채용합니다.</BottomMent>
-        </MentContainer>
-      </TitleContainer>
-      <CarrersContainer>
-        <CarrerTitle>채용 공고</CarrerTitle>
-        {datas.map((data) => (
-          <CarrerItem
-            onClick={() => navigate('/post/1')}
-            title={data.title}
-            isFocusRecruit={data.isFocusRecruit}
-            isImportant={data.isImportant}
-            keyWord={data.keyWord}
-          />
-        ))}
-      </CarrersContainer>
-    </MainContainer>
+    <>
+      <BannerImg src={mainBanner} />
+      <FirstPageContainer>
+        <BtnContainer>
+          <TitleContainer>
+            <Title>Entry에서는 좋은 인재를 찾고 있어요</Title>
+            <KeyWord>EntryDSM</KeyWord>
+          </TitleContainer>
+          <Btn onClick={postNavClick}>지원하러 가기</Btn>
+        </BtnContainer>
+      </FirstPageContainer>
+      <SecondPageContainer>
+        <FirstTitleContainer>
+          <FirstTitle>EntryCareers 에서는</FirstTitle>
+          <SecondTitle isMain={false}>
+            Entry <SecondTitle isMain={true}>인턴십</SecondTitle>을 지원할 수
+            있어요.
+          </SecondTitle>
+          <SubTitle>
+            Entry 인턴십에서는 프론트엔드와 백엔드 심화 멘토링을 받을 수 있어요!
+          </SubTitle>
+        </FirstTitleContainer>
+        <IpadImg src={mainIpad} alt="ipad" />
+      </SecondPageContainer>
+      <ThirdPageContainer>
+        <BtnContentContainer>
+          <SecondTitleContainer>
+            <FirstTitle>EntryDSM</FirstTitle>
+            <SecondTitle isMain={false}>
+              <SecondTitle isMain={true}>서비스</SecondTitle>가 궁금하시다면?
+            </SecondTitle>
+            <SubTitle>Entry 서비스를 이용해보세요!</SubTitle>
+          </SecondTitleContainer>
+          <Btn
+            onClick={() => {
+              window.open('https://www.entrydsm.hs.kr/', '_blank');
+            }}
+          >
+            EntryDSM 바로가기
+          </Btn>
+        </BtnContentContainer>
+      </ThirdPageContainer>
+    </>
   );
 };
 
-const CarrersContainer = styled.div`
-  max-width: 1200px;
-  margin: 0 20%;
-  padding: 3rem 2rem;
+const BtnContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-`;
-
-const CarrerTitle = styled.div`
-  font-size: 16px;
-  color: #5d5d5d;
-  margin-bottom: 25px;
-`;
-
-const DSM = styled.div`
-  font-size: 30px;
-  color: ${colors.orange[500]};
-  padding: 0 5px 0 0;
-`;
-
-const There = styled.div`
-  color: white;
-  font-size: 30px;
-`;
-
-const Top = styled.div`
-  display: flex;
-`;
-
-const TopMent = styled.div`
-  display: flex;
+  gap: 96px;
   align-items: center;
 `;
 
-const LogoImg = styled.div`
-  margin-right: 10px;
-  transform: translateY(5px);
+const BtnAllContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 40px;
 `;
 
-const BottomMent = styled.div`
-  color: white;
-  font-size: 30px;
-  margin-top: 16px;
+const SecondPageContainer = styled.div`
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  padding: 140px 100px;
 `;
 
-const MentContainer = styled.div`
+const ThirdPageContainer = styled.div`
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${colors.orange[50]};
+`;
+
+const IpadImg = styled.img`
+  width: 900px;
   position: absolute;
-  top: 35%;
-  left: 15%;
-  z-index: 10;
+  bottom: 12px;
+  right: 12px;
+  z-index: -1;
+`;
+
+const FirstTitle = styled.div`
+  font-size: 36px;
+  font-weight: 600;
+  color: ${colors.gray[800]};
+`;
+
+const SecondTitle = styled.span<{ isMain: boolean }>`
+  font-size: 44px;
+  font-weight: 600;
+  color: ${({ isMain }) => (isMain ? colors.orange[500] : colors.gray[800])};
+`;
+
+const SubTitle = styled.div`
+  font-size: 24px;
+  font-weight: 300;
+  color: ${colors.gray[400]};
+`;
+
+const SecondTitleContainer = styled.div`
   display: flex;
   flex-direction: column;
-  font-weight: bold;
+  align-items: center;
+  gap: 32px;
+`;
+
+const FirstTitleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+`;
+
+const BtnContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 80px;
 `;
 
 const TitleContainer = styled.div`
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 42px;
 `;
 
-const MainContainer = styled.div`
+const FirstPageContainer = styled.div`
+  position: relative;
   width: 100vw;
-  height: 86vh;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const BannerImg = styled.img`
+  height: 100vh;
+  width: fit-content;
+  position: absolute;
+  top: 0;
+  z-index: -1;
+`;
+
+const Title = styled.div`
+  font-size: 60px;
+  font-weight: 600;
+  color: ${colors.gray[50]};
+`;
+
+const KeyWord = styled.div`
+  width: 196px;
+  height: 52px;
+  border-radius: 26px;
+  border: 0.5px solid ${colors.gray[100]};
+  color: ${colors.gray[100]};
+  font-size: 20px;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Btn = styled.button`
+  width: fit-content;
+  padding: 20px 100px;
+  font-size: 24px;
+  font-weight: 600;
+  color: ${colors.gray[50]};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: ${colors.orange[500]};
+  border-radius: 20px;
+  &:hover {
+    background-color: ${colors.orange[600]};
+    transition: 0.4s ease-in-out;
+  }
 `;
