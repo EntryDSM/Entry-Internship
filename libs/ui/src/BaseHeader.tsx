@@ -97,11 +97,6 @@ export const CommonHeader = ({ isAdmin }: IHeaderType) => {
       name: '지원하기',
       path: '/post',
     },
-
-    {
-      name: '팀소개',
-      path: '/team',
-    },
   ];
 
   const { pathname } = useLocation();

@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { AppLayout } from './components';
-import { Main, DetailPost, ApplicationWriting } from './pages';
+import { Post, DetailPost, ApplicationWriting, Main } from './pages';
 
 export const Router = createBrowserRouter([
   {
@@ -8,12 +8,12 @@ export const Router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       {
-        path: '/post',
+        path: '/',
         element: <Main />,
       },
       {
-        path: '/team',
-        element: <div>dd</div>,
+        path: '/post',
+        element: <Post />,
       },
       {
         path: '/post/:id',
