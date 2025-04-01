@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 import { Button } from '@entry/ui';
 import { CareerItemProps } from '@entry/types';
 import { TitleBanner, ApplyCond } from '../components';
@@ -91,13 +91,13 @@ export const DetailPost = () => {
 const ErrorMessage = styled.div`
   text-align: center;
   font-size: 18px;
-  color: ${color.extra.error};
+  color: ${colors.extra.error};
 `;
 
 const LoadingMessage = styled.div`
   text-align: center;
   font-size: 18px;
-  color: ${color.gray[600]};
+  color: ${colors.gray[600]};
 `;
 
 const ButtonWrapper = styled.div`
@@ -179,7 +179,7 @@ const TechStack = styled.div`
 `;
 
 const TechTag = styled.div`
-  color: ${color.gray[400]};
+  color: ${colors.gray[400]};
   font-size: 15px;
   font-weight: 500;
 `;
@@ -222,7 +222,7 @@ const ImportantList = styled.div`
 const ListItemContent = styled.div`
   font-size: 35px;
   font-weight: 500;
-  color: ${color.gray[600]};
+  color: ${colors.gray[600]};
   font-weight: bold;
   min-width: 300px;
 `;

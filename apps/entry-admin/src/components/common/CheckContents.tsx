@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 import { Check } from '@entry/ui';
 
 type CheckType = {
@@ -36,9 +36,9 @@ const CheckBoxIcon = styled.div<{ isCheck: boolean }>`
   width: 22px;
   height: 22px;
   border-radius: 6px;
-  border: 1px solid ${color.gray[300]};
+  border: 1px solid ${colors.gray[300]};
   background-color: ${({ isCheck }) =>
-    isCheck ? color.gray[300] : color.extra.white};
+    isCheck ? colors.gray[300] : colors.extra.white};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,7 +52,7 @@ const Label = styled.label`
   gap: 12px;
   font-size: 18px;
   font-weight: 400;
-  color: ${color.gray[400]};
+  color: ${colors.gray[400]};
 `;
 
 const ImgContainer = styled.div`

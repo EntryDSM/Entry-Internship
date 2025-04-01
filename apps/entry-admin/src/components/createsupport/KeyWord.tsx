@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 
 type KeyWordType = {
   children?: string;
@@ -17,6 +17,6 @@ const KeywordContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 13px 46px;
-  border: 1px solid ${color.green[500]};
-  color: ${color.green[500]};
+  border: 1px solid ${colors.green[500]};
+  color: ${colors.green[500]};
 `;

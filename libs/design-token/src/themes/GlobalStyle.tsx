@@ -18,6 +18,7 @@ const style = css`
     font-style: normal;
     font-family: 'Pretendard-Regular', sans-serif;
     text-decoration: none;
+
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;

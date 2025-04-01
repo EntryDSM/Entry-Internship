@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router';
 import { GlobalStyle } from '@entry/design-token';
 
 export const AppLayout = () => {
@@ -8,12 +8,11 @@ export const AppLayout = () => {
       <MainContainer>
         <Outlet />
       </MainContainer>
-      <GlobalStyle />
+      <GlobalStyle />;
     </>
   );
 };
 
 const MainContainer = styled.main`
   width: 100vw;
-  margin-top: 64px;
 `;

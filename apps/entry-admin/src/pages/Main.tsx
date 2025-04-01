@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 import { writeIcon } from '@entry/ui';
 import { CareerItemProps } from '@entry/types';
 import { CareerItem, TitleBanner } from '../components';
@@ -74,7 +74,7 @@ const NoCareersMessage = styled.div`
   margin-top: 20px;
   font-size: 16px;
   font-weight: bold;
-  color: ${color.gray[600]};
+  color: ${colors.gray[600]};
   text-align: center;
 `;
 

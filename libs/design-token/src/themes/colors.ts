@@ -1,4 +1,4 @@
-export const color = {
+export const colors = {
   orange: {
     900: '#FF640D',
     800: '#FF6814',

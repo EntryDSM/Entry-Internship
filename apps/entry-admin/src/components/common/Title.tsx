@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 
 type TitleType = {
   mainTitle?: string;
@@ -18,13 +18,13 @@ export const Title = ({ mainTitle, subTitle }: TitleType) => {
 const MainTitle = styled.div`
   font-size: 48px;
   font-weight: 600;
-  color: ${color.gray[900]};
+  color: ${colors.gray[900]};
 `;
 
 const SubTitle = styled.div`
   font-size: 16px;
   font-weight: 300;
-  color: ${color.gray[400]};
+  color: ${colors.gray[400]};
 `;
 
 const TitleContainer = styled.div`

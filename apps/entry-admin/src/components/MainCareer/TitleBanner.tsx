@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 import { TitleImgIcon } from '@entry/ui';
 import { entryLogoIcon } from '../../assets';
 
@@ -33,7 +33,7 @@ const Img = styled.img`
 
 const DSM = styled.div`
   font-size: 35px;
-  color: ${color.green[500]};
+  color: ${colors.green[500]};
   padding: 0 5px 0 0;
 `;
 

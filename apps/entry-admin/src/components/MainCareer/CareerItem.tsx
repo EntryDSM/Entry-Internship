@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 import { kebabIcon } from '@entry/ui';
 import { useModal } from '@entry/hooks';
 import { CareerItemProps } from '@entry/types';
@@ -106,8 +106,8 @@ export const CareerItem = ({
 };
 
 const CancelButton = styled.button`
-  background-color: ${color.gray[200]};
-  color: ${color.gray[600]};
+  background-color: ${colors.gray[200]};
+  color: ${colors.gray[600]};
   border: none;
   padding: 8px;
   margin-right: 8px;
@@ -150,11 +150,11 @@ const DropMenu = styled.div`
 const DropDelete = styled.div`
   padding: 8px 16px;
   font-size: 14px;
-  color: ${color.gray[600]};
+  color: ${colors.gray[600]};
   cursor: pointer;
 
   &:hover {
-    background-color: ${color.gray[100]};
+    background-color: ${colors.gray[100]};
     color: #ff8484;
   }
 `;
@@ -187,13 +187,13 @@ const ModalContent = styled.div`
 const ModalTitle = styled.h2`
   font-size: 18px;
   font-weight: bold;
-  color: ${color.gray[800]};
+  color: ${colors.gray[800]};
   margin-bottom: 16px;
 `;
 
 const ModalDescription = styled.p`
   font-size: 14px;
-  color: ${color.extra.error};
+  color: ${colors.extra.error};
   font-weight: bold;
   text-align: center;
 `;
@@ -237,7 +237,7 @@ const TechStack = styled.div`
 `;
 
 const TechTag = styled.div`
-  color: ${color.gray[600]};
+  color: ${colors.gray[600]};
   font-size: 12px;
   font-weight: 500;
 `;
@@ -284,7 +284,7 @@ const Top = styled.div`
 const ListItemContent = styled.div`
   font-size: 20px;
   font-weight: 500;
-  color: ${color.extra.black};
+  color: ${colors.extra.black};
   font-weight: bold;
 `;
 
