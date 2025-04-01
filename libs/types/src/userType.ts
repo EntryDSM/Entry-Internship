@@ -3,7 +3,6 @@ export type UserType = {
 };
 
 export type HeaderTypes = {
-  userType: UserType;
   isLogin: boolean;
 };
 

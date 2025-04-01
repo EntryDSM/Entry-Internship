@@ -1,33 +1,54 @@
-import styled from '@emotion/styled';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from '@emotion/styled';
 import { color } from '@entry/design-token';
-import { ImgStore } from '@entry/ui';
-import { IconStore } from '@entry/ui';
-import { CarrerItem } from '../components/mainCarrer';
+import { writeIcon } from '@entry/ui';
+import { CareerItemProps } from '@entry/types';
+import { CareerItem, TitleBanner } from '../components';
+import { fetchAllPosts } from '../apis';
 
 export const Main = () => {
+  const [careerItems, setCareerItems] = useState<CareerItemProps[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchAllPosts();
+        setCareerItems(data);
+      } catch (error) {
+        console.error('공고 데이터 불러오는 중 오류 발생', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <LoadingMessage>로딩 중...</LoadingMessage>;
+  }
+
   return (
     <MainContainer>
-      <TitleContainer>
-        <ImgStore name="TitleImg" width="100vw" height="300px" />
-        <MentContainer>
-          <Top>
-            <TopMent>
-              <There>Entry</There>
-              <DSM>DSM</DSM>
-              <There>에서</There>
-            </TopMent>
-          </Top>
-          <BottomMent>다음과 같은 인재들을 채용합니다.</BottomMent>
-        </MentContainer>
-      </TitleContainer>
+      <TitleBanner />
       <CarrersContainer>
         <CarrerTitle>채용 공고</CarrerTitle>
-        <CarrerItem />
-        <CarrerItem />
-        <CarrerItem />
-        <CarrerItem />
-        <CarrerItem />
+        {careerItems.length > 0 ? (
+          careerItems.map((item) => (
+            <CareerItem
+              key={item.noticeId}
+              noticeId={item.noticeId}
+              title={item.title}
+              isFocusRecruit={item.isFocusRecruit}
+              isImportant={item.isImportant}
+              keyWord={item.keyWord}
+            />
+          ))
+        ) : (
+          <NoCareersMessage>현재 공고가 없습니다.</NoCareersMessage>
+        )}
       </CarrersContainer>
       <WriteButton />
     </MainContainer>
@@ -39,10 +60,23 @@ const WriteButton = () => {
 
   return (
     <WriteButtonField onClick={() => navigate('/create-support')}>
-      <IconStore name="Write" width="20px" height="20px" />글 작성하기
+      <img src={writeIcon} alt="✏️" />글 작성하기
     </WriteButtonField>
   );
 };
+
+const LoadingMessage = styled.div`
+  text-align: center;
+  font-size: 18px;
+`;
+
+const NoCareersMessage = styled.div`
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: ${color.gray[600]};
+  text-align: center;
+`;
 
 const WriteButtonField = styled.button`
   position: fixed;
@@ -59,9 +93,15 @@ const WriteButtonField = styled.button`
   border: none;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  z-index: 500;
 
   &:hover {
     background-color: #229a59;
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
   }
 `;
 
@@ -78,51 +118,6 @@ const CarrerTitle = styled.div`
   font-size: 16px;
   color: #5d5d5d;
   margin-bottom: 25px;
-`;
-
-const DSM = styled.div`
-  font-size: 30px;
-  color: ${color.green[500]};
-  padding: 0 5px 0 0;
-`;
-
-const There = styled.div`
-  color: white;
-  font-size: 30px;
-`;
-
-const Top = styled.div`
-  display: flex;
-`;
-
-const TopMent = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const LogoImg = styled.div`
-  margin-right: 10px;
-  transform: translateY(5px);
-`;
-
-const BottomMent = styled.div`
-  color: white;
-  font-size: 30px;
-  margin-top: 16px;
-`;
-
-const MentContainer = styled.div`
-  position: absolute;
-  top: 35%;
-  left: 15%;
-  z-index: 10;
-  display: flex;
-  flex-direction: column;
-  font-weight: bold;
-`;
-
-const TitleContainer = styled.div`
-  position: relative;
 `;
 
 const MainContainer = styled.div`

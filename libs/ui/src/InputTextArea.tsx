@@ -6,8 +6,8 @@ type InputTextAreaType = {
   label: string;
   valueInput?: string;
   valueArea?: string;
-  inputChange?: () => void;
-  areaChange?: () => void;
+  inputChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  areaChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
 };
 
 export const InputTextArea = ({

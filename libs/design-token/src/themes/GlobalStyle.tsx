@@ -3,8 +3,8 @@ import { Global, css } from '@emotion/react';
 const style = css`
   @font-face {
     font-family: 'Pretendard-Regular';
-    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.ttf');
-    font-weight: 100 900;
+    src: url('/fonts/Pretendard-Regular.ttf') format('truetype');
+    font-weight: normal;
     font-style: normal;
   }
 
@@ -16,9 +16,8 @@ const style = css`
     outline: unset;
     list-style: none;
     font-style: normal;
-    font-family: 'Pretendard-Regular';
+    font-family: 'Pretendard-Regular', sans-serif;
     text-decoration: none;
-
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -28,6 +27,7 @@ const style = css`
   body {
     overflow-x: hidden;
   }
+
   button {
     outline: none;
     border: none;

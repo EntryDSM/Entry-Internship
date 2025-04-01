@@ -1,5 +1,8 @@
 {
   "name": "@entry-internship/entry-admin",
   "version": "0.0.1",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "@tanstack/react-query": "^5.71.1"
+  }
 }
