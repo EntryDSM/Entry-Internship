@@ -25,7 +25,7 @@ const ButtonContainer = styled.button`
   color: ${colors.extra.white};
   font-size: 25px;
   font-weight: 700;
-  background-color: ${color.green[500]};
+  background-color: ${colors.green[500]};
   border-radius: 20px;
   cursor: pointer;
 `;
