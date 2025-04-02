@@ -10,7 +10,7 @@ export const EntryLogo = ({
   isAdmin = false,
 }: ILogoType) => {
   return (
-    <>
+    <div>
       <svg
         width={width}
         height={height}
@@ -31,6 +31,6 @@ export const EntryLogo = ({
           fill={isAdmin ? '#34D37B' : '#FF7C33'}
         />
       </svg>
-    </>
+    </div>
   );
 };

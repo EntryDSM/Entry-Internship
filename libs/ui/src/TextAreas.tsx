@@ -6,7 +6,7 @@ type TextAreaType = {
   isWrite?: boolean;
   placeholder?: string;
   label?: string;
-  onChange?: () => void;
+  onChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   value?: string;
 };
 

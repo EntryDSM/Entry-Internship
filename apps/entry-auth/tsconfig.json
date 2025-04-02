@@ -3,6 +3,9 @@
   "include": [],
   "references": [
     {
+      "path": "../../libs/design-token"
+    },
+    {
       "path": "./tsconfig.app.json"
     }
   ],

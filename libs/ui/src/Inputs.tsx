@@ -8,10 +8,10 @@ type InputType = {
   label?: string;
   value?: string;
   onKeyDown?: () => void;
-  onChange?: () => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur?: () => void;
   onCompositionEnd?: () => void;
-  onKeyUp?: () => void;
+  onKeyUp?: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 };
 
 export const Inputs = ({
