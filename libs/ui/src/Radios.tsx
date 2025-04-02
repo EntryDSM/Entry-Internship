@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 import { Check } from './assets';
 import { Label } from './Label';
 import { SubBtn } from './SubBtn';
@@ -145,13 +145,13 @@ const Radio = styled.input<Pick<RadioType, 'userType'>>`
   font-weight: 500;
   border-radius: 50%;
   appearance: none;
-  box-shadow: 0 0 0 1px ${color.gray[600]};
+  box-shadow: 0 0 0 1px ${colors.gray[600]};
   &:checked {
     box-shadow: 0 0 0 1.6px
       ${({ userType }) =>
-        userType === 'admin' ? color.green[500] : color.orange[500]};
+        userType === 'admin' ? colors.green[500] : colors.orange[500]};
     background-color: ${({ userType }) =>
-      userType === 'admin' ? color.green[500] : color.orange[500]};
+      userType === 'admin' ? colors.green[500] : colors.orange[500]};
   }
 `;
 

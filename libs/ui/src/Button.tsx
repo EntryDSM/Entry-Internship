@@ -1,4 +1,4 @@
-import { color } from '@entry/design-token';
+import { colors } from '@entry/design-token';
 import styled from '@emotion/styled';
 import { Plus } from './assets';
 
@@ -22,7 +22,7 @@ const ButtonContainer = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: ${color.extra.white};
+  color: ${colors.extra.white};
   font-size: 25px;
   font-weight: 700;
   background-color: ${color.green[500]};
