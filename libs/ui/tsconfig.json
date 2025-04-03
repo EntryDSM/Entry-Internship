@@ -3,6 +3,9 @@
   "include": [],
   "references": [
     {
+      "path": "../../apps/entry-user"
+    },
+    {
       "path": "../design-token"
     },
     {
