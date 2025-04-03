@@ -18,12 +18,12 @@ type INavType = {
 
 const Nav = ({ children, isPath, isAdmin, onClick }: INavType) => {
   return (
-    <>
+    <div>
       <NavContentContainer onClick={onClick}>
         <NavContent isPath={isPath}>{children}</NavContent>
         <NavLine isPath={isPath} isAdmin={isAdmin} />
       </NavContentContainer>
-    </>
+    </div>
   );
 };
 

@@ -6,11 +6,9 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <div>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={Router} />
-      </QueryClientProvider>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={Router} />
+    </QueryClientProvider>
   );
 }
 

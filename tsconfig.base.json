@@ -24,7 +24,8 @@
       "@entry/hooks/*": ["libs/hooks/src/*"],
       "@entry/types/*": ["lib/types/src/*"],
       "@entry/ui/*": ["libs/ui/src/*"],
-      "@entry/utils/*": ["libs/utils/src/*"]
+      "@entry/utils/*": ["libs/utils/src/*"],
+      "@org/entry-admin/*": ["apps/entry-admin/src/*"]
     }
   }
 }

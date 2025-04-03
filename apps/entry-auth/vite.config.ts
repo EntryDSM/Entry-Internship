@@ -1,6 +1,7 @@
 /// <reference types='vitest' />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig(() => ({
   root: __dirname,
@@ -14,6 +15,18 @@ export default defineConfig(() => ({
     host: 'localhost',
   },
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@org/entry-admin/layout': path.resolve(
+        __dirname,
+        '../entry-admin/src/layout'
+      ),
+      '@org/entry-admin/routes': path.resolve(
+        __dirname,
+        '../entry-admin/src/routes'
+      ),
+    },
+  },
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [ nxViteTsPaths() ],
