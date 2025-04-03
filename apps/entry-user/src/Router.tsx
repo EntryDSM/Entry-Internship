@@ -1,6 +1,13 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { AppLayout } from './components';
-import { Post, DetailPost, ApplicationWriting, Main } from './pages';
+import {
+  Post,
+  DetailPost,
+  ApplicationWriting,
+  Main,
+  Login,
+  AdminLogin,
+} from './pages';
 
 export const Router = createBrowserRouter([
   {
@@ -24,5 +31,13 @@ export const Router = createBrowserRouter([
         element: <ApplicationWriting />,
       },
     ],
+  },
+  {
+    path: '/login-user',
+    element: <Login />,
+  },
+  {
+    path: '/login-admin',
+    element: <AdminLogin />,
   },
 ]);

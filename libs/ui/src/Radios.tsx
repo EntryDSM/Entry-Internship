@@ -2,18 +2,16 @@ import styled from '@emotion/styled';
 import { colors } from '@entry/design-token';
 import { Check } from './assets';
 import { Label } from './Label';
-import { SubBtn } from './SubBtn';
 
 type RadioType = {
   userType?: 'admin' | 'user';
-  isWrite?: boolean;
   placeholder?: string;
   label?: string;
   radioLabel?: string;
   radioPlaceholder?: string;
   name?: string;
   datas?: object[];
-  setAddRadio?: React.Dispatch<React.SetStateAction<RadioItemType[]>>;
+  setAddRadio: React.Dispatch<React.SetStateAction<RadioItemType[]>>;
   addRadio?: object[];
   onRadioChange?: () => void;
 };
@@ -22,14 +20,12 @@ type RadioItemType = {
   userType?: 'admin' | 'user';
   radioPlaceholder?: string;
   radioLabel?: string;
-  isWrite?: boolean;
   name?: string;
   onChange?: (e: string) => void;
 };
 
 const RadioItem = ({
   radioPlaceholder,
-  isWrite,
   userType = 'admin',
   radioLabel,
   name,
@@ -50,7 +46,6 @@ const RadioItem = ({
         </ImgContainer>
       </RadioFakeContainer>
       <Label
-        isWrite={isWrite}
         placeholder={radioPlaceholder}
         label={radioLabel}
         onChange={(e) => onChange?.((e.target as HTMLInputElement).value)}
@@ -61,21 +56,18 @@ const RadioItem = ({
 
 export const Radios = ({
   label,
-  isWrite,
   placeholder,
-  radioLabel,
   userType,
   radioPlaceholder,
   name,
   setAddRadio,
-  addRadio = [],
   datas = [],
   onRadioChange,
 }: RadioType) => {
   const addRadioClick = () => {
     setAddRadio((prevAddRadio) => [
       ...prevAddRadio,
-      { radioPlaceholder, isWrite, userType, radioLabel: '', value: '' },
+      { radioPlaceholder, userType, radioLabel: '', value: '' },
     ]);
   };
 
@@ -91,23 +83,10 @@ export const Radios = ({
 
   return (
     <RadioContainer>
-      <Label label={label} isWrite={isWrite} placeholder={placeholder} />
+      <Label label={label} placeholder={placeholder} />
       <ContentContainer>
-        {addRadio.map((item, index) => (
-          <RadioItem
-            isWrite={item.isWrite}
-            radioPlaceholder={item.radioPlaceholder}
-            userType={item.userType}
-            radioLabel={item.radioLabel}
-            name={name}
-            onChange={(value) => handleRadioClick(index, value)}
-          />
-        ))}
-
-        {/*아래는 isWrite가 false일 때 뜨는 radio입니다.*/}
         {datas.map((data) => (
           <RadioItem
-            isWrite={isWrite}
             radioPlaceholder={radioPlaceholder}
             userType={userType}
             radioLabel={data.label}
@@ -115,8 +94,6 @@ export const Radios = ({
             onRadioChange={handleDataRadioChange}
           />
         ))}
-
-        {isWrite && <SubBtn userType="admin" onClick={addRadioClick} />}
       </ContentContainer>
     </RadioContainer>
   );

@@ -3,7 +3,9 @@ import { colors } from '@entry/design-token';
 import { EntryLogo } from './assets';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SideBarBtnIcon } from './assets/icons/SideBarBtnIcon';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { logoutApi } from '../../../apps/entry-user/src/apis/logoutApi';
+import { useCookies } from 'react-cookie';
 
 interface IHeaderType {
   isAdmin?: boolean;
@@ -91,6 +93,14 @@ export const AdminHeader = () => {
 };
 
 export const CommonHeader = ({ isAdmin }: IHeaderType) => {
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (accessToken === '') setIsLogin(false);
+    else setIsLogin(true);
+  }, []);
+
   const navigate = useNavigate();
   const navData = [
     {
@@ -110,6 +120,24 @@ export const CommonHeader = ({ isAdmin }: IHeaderType) => {
   const sideClick = () => {
     setIsSideClick(!isSideClick);
   };
+
+  const loginClick = () => {
+    navigate('/login-user');
+  };
+
+  const [cookies] = useCookies(['accessToken']);
+  const apiLogout = logoutApi();
+  const logoutClick = () => {
+    console.log('logout');
+    apiLogout.mutate();
+    //로그아웃하는 api
+  };
+
+  useEffect(() => {
+    const accessToken = cookies.accessToken; //쿠키의 토큰 확인
+    if (!accessToken) setIsLogin(false);
+    else setIsLogin(true);
+  }, [cookies.accessToken]);
 
   return (
     <HeaderContainer>
@@ -133,26 +161,29 @@ export const CommonHeader = ({ isAdmin }: IHeaderType) => {
           <HeaderLogoTitle>EntryCareers</HeaderLogoTitle>
         </LogoContainer>
         <ButtonContainer>
-          <NavContainer>
-            {navData.map((data) => (
-              <Nav
-                key={data.path}
-                isPath={pathname.includes(data.path)}
-                onClick={() => navClick(data.path)}
-                isAdmin={isAdmin}
-              >
-                {data.name}
-              </Nav>
-            ))}
-          </NavContainer>
+          {isLogin && (
+            <NavContainer>
+              {navData.map((data) => (
+                <Nav
+                  key={data.path}
+                  isPath={pathname.includes(data.path)}
+                  onClick={() => navClick(data.path)}
+                  isAdmin={isAdmin}
+                >
+                  {data.name}
+                </Nav>
+              ))}
+            </NavContainer>
+          )}
           <Button
             color={colors.gray[50]}
             backgroundColor={isAdmin ? colors.green[500] : colors.orange[500]}
             backgroundHoverColor={
               isAdmin ? colors.green[700] : colors.orange[700]
             }
+            onClick={isLogin ? logoutClick : loginClick}
           >
-            로그인
+            {isLogin ? '로그아웃' : '로그인'}
           </Button>
         </ButtonContainer>
       </NavAllContainer>
@@ -214,6 +245,7 @@ const Button = styled.button<{
   color: string;
   backgroundHoverColor: string;
 }>`
+  cursor: pointer;
   outline: none;
   transition: 0.3s ease-in;
   border: none;
