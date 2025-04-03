@@ -2,32 +2,56 @@ import { useEffect, useState } from 'react';
 import { colors } from '@entry/design-token';
 import styled from '@emotion/styled';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ApplyConditions } from '@entry/types';
-import { Button } from '@entry/ui';
 import { ImgStore, ApplyCond } from '../components';
-import { pizza } from '../assets';
+import { Button } from '@entry/ui';
+import { useQuery } from '@tanstack/react-query';
+import { postDetailApi } from '../apis';
+import { useCookies } from 'react-cookie';
 
 export const DetailPost = () => {
+  const [datas, setDatas] = useState({
+    noticeId: '',
+    title: '',
+    keyWord: [],
+    titleImageUrl: '',
+    description: [],
+    isFocusRecruit: false,
+    isImportant: false,
+  });
+
   const navigate = useNavigate();
   const { id } = useParams();
+  const postId = id ? parseInt(id) : null;
+  const [cookies] = useCookies(['accessToken']);
+
+  const { data: postData } = useQuery({
+    queryKey: ['article', postId],
+    queryFn: () => postDetailApi(postId, cookies.accessToken),
+    enabled: Boolean(postId) && Boolean(cookies.accessToken),
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  //해당 id에 대한 채용 공고 데이터 api 가져오기
+  useEffect(() => {
+    if (postData?.data) {
+      setDatas({
+        noticeId: postData.data.noticeId || '',
+        title: postData.data.title || '',
+        keyWord: postData.data.keyword || [],
+        titleImageUrl:
+          postData.data.titleImageUrl ||
+          'https://www.figma.com/design/AfxiCQtFhC2KVS1RAvokxZ/EntryDSM_10%EA%B8%B0%F0%9F%A9%B7?node-id=2400-77&t=aHo1oBRKTDfo7ElP-4',
+        description: postData.data.description || [],
+        isFocusRecruit: postData.data.isFocusRecruit || false,
+        isImportant: postData.data.isImportant || false,
+      });
+    }
+  }, [postData]);
 
-  // 지원서 조건 api
-  const [applyData, setApplyData] = useState<ApplyConditions>({
-    title: '합류하게 될 전공을 알려드려요.',
-    content:
-      '피자 배달부는 프로그램의 백엔드를 담당하게 돼요.피자 배달부는 프로그램의 백엔드를 담당하게 돼요.피자 배달부는 프로그램의 백엔드를 담당하게 돼요.피자 배달부는 프로그램의 백엔드를 담당하게 돼요.피자 배달부는 프로그램의 백엔드를 담당하게 돼요.',
-  });
-  const { title, content } = applyData;
-
-  // 지원하기 경로
   const moveToSupport = () => {
-    navigate('/post/:id/application-writing');
+    navigate(`/post/${id}/application-writing`);
   };
 
   return (
@@ -48,37 +72,41 @@ export const DetailPost = () => {
           <BottomMent>다음과 같은 인재들을 채용합니다.</BottomMent>
         </MentContainer>
       </TitleContainer>
-      {/* 상세조회 */}
+
       <ContentContainer>
         <DetailContentContainer>
           <PostTitleContainer>
-            <ListItemContent>피자 배달부 모집 ( 비정규직 )</ListItemContent>
+            <ListItemContent>{datas.title}</ListItemContent>
             <ImportantList>
-              <Focus>집중채용</Focus>
-              <Important>중요</Important>
+              {datas.isFocusRecruit && <Focus>집중채용</Focus>}
+              {datas.isImportant && <Important>중요</Important>}
             </ImportantList>
           </PostTitleContainer>
+
           <TechStack>
-            <TechTag>개발</TechTag>
-            <TechTag>Go언어</TechTag>
-            <TechTag>프론트엔드</TechTag>
+            {datas.keyWord.map((data, index) => (
+              <TechTag key={index}>{data}</TechTag>
+            ))}
           </TechStack>
         </DetailContentContainer>
+
         <ClubInformation>
-          {/* 지원서 조건들 get */}
           <LeftContainer>
-            <ApplyCond title={title} content={content} />
-            <ApplyCond title={title} content={content} />
-          </LeftContainer>
-          {/* 타이틀 이미지, 지원자 보기(이동) */}
-          <RightContainer>
-            <TitleImg src={pizza}></TitleImg>
-            <ButtonWrapper>
-              <Button
-                userType="user"
-                children="지원하기"
-                onClick={moveToSupport}
+            {datas.description.map((data, index) => (
+              <ApplyCond
+                key={index}
+                title={data.title}
+                content={data.content}
               />
+            ))}
+          </LeftContainer>
+
+          <RightContainer>
+            <TitleImg src={datas.titleImageUrl} />
+            <ButtonWrapper>
+              <Button userType="user" onClick={moveToSupport}>
+                지원하기
+              </Button>
             </ButtonWrapper>
           </RightContainer>
         </ClubInformation>
@@ -86,6 +114,8 @@ export const DetailPost = () => {
     </DetailPostContainer>
   );
 };
+
+// 스타일 코드 유지
 
 const ContentContainer = styled.div`
   display: flex;

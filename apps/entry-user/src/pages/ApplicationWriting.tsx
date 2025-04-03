@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { Inputs, TextAreas, Radios, SubBtn } from '@entry/ui';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-// import { apiApplicationWriting } from '../apis';
+import { applicationWritingApi } from '../apis';
 
 export const ApplicationWriting = () => {
   useEffect(() => {
@@ -138,22 +138,21 @@ export const ApplicationWriting = () => {
     }));
   };
 
-  // const apiSubmit = apiApplicationWriting();
+  const apiSubmit = applicationWritingApi();
 
   const submitClick = () => {
-    navigate('/post');
-    // console.log('api 클릭');
-    // apiSubmit.mutate({
-    //   noticeId: datas.noticeId,
-    //   applicationName: datas.inputDatas[0].value,
-    //   studentId: datas.inputDatas[1].value,
-    //   phoneNumber: datas.inputDatas[2].value,
-    //   programmingExperience: datas.radioDatas[0].value,
-    //   major: datas.radioDatas[1].value,
-    //   motivation: datas.areaDatas[0].value,
-    //   selfIntroduction: datas.areaDatas[1].value,
-    // });
-    // console.log('api 보냄');
+    console.log('api 클릭');
+    apiSubmit.mutate({
+      noticeId: datas.noticeId,
+      applicationName: datas.inputDatas[0].value,
+      studentId: datas.inputDatas[1].value,
+      phoneNumber: datas.inputDatas[2].value,
+      programmingExperience: datas.radioDatas[0].value,
+      major: datas.radioDatas[1].value,
+      motivation: datas.areaDatas[0].value,
+      selfIntroduction: datas.areaDatas[1].value,
+    });
+    console.log('api 보냄');
   };
 
   console.log(datas);

@@ -6,17 +6,28 @@ type ButtonType = {
   children?: string;
   onClick?: () => void;
   onChange?: () => void;
+  isAdmin?: boolean;
 };
 
-export const Button = ({ children, onClick, onChange }: ButtonType) => {
+export const Button = ({
+  isAdmin,
+  children,
+  onClick,
+  onChange,
+}: ButtonType) => {
   return (
-    <ButtonContainer type="button" onClick={onClick} onChange={onChange}>
+    <ButtonContainer
+      isAdmin={isAdmin}
+      type="button"
+      onClick={onClick}
+      onChange={onChange}
+    >
       {children ? children : <Plus color="#ffffff" size={22} />}
     </ButtonContainer>
   );
 };
 
-const ButtonContainer = styled.button`
+const ButtonContainer = styled.button<Pick<ButtonType, 'isAdmin'>>`
   width: 100%;
   height: 60px;
   display: flex;
@@ -25,7 +36,14 @@ const ButtonContainer = styled.button`
   color: ${colors.extra.white};
   font-size: 25px;
   font-weight: 700;
-  background-color: ${colors.green[500]};
+  background-color: ${({ isAdmin }) =>
+    isAdmin ? colors.green[500] : colors.orange[500]};
   border-radius: 20px;
   cursor: pointer;
+
+  &:hover {
+    
+    background-color: ${({ isAdmin }) =>
+      isAdmin ? colors.green[600] : colors.orange[600]};
+  }
 `;

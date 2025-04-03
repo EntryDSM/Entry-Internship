@@ -4,9 +4,12 @@ import { colors } from '@entry/design-token';
 import { ImgStore } from '../components';
 import { CarrerItem } from '../components';
 import { useEffect, useState } from 'react';
+import { postAllApi } from '../apis';
 
 export const Post = () => {
   const navigate = useNavigate();
+
+  const { data } = postAllApi();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -21,30 +24,21 @@ export const Post = () => {
     }[]
   >([
     {
-      title: '피자 배달부 모집 ( 정규직 )',
-      keyWord: ['개발', 'GO 언어'],
-      isFocusRecruit: true,
-      isImportant: true,
-    },
-    {
-      title: '피자 배달부 모집 ( 정규직 )',
-      keyWord: ['개발', 'GO 언어'],
+      title: '',
+      keyWord: [],
       isFocusRecruit: false,
-      isImportant: true,
-    },
-    {
-      title: '피자 배달부 모집 ( 정규직 )',
-      keyWord: ['개발', 'GO 언어'],
-      isFocusRecruit: false,
-      isImportant: true,
-    },
-    {
-      title: '피자 배달부 모집 ( 정규직 )',
-      keyWord: ['개발', 'GO 언어'],
-      isFocusRecruit: false,
-      isImportant: true,
+      isImportant: false,
     },
   ]);
+
+  useEffect(() => {
+    console.log(' dd:', data);
+
+    if (data) {
+      setDatas(data);
+      console.log('✅ dd:', data);
+    }
+  }, [data]);
 
   return (
     <MainContainer>

@@ -1,23 +1,63 @@
 import styled from '@emotion/styled';
 import { mainBanner, mainIpad } from '@entry/ui';
 import { colors } from '@entry/design-token';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 
 export const Main = () => {
+  const location = useLocation();
+  const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
+
+  useEffect(() => {
+    console.log('dd');
+    const params = new URLSearchParams(location.search);
+    const accessToken = params.get('accessToken');
+    const refreshToken = params.get('refreshToken');
+    const accessTokenExpiration = params.get('accessTokenExpiration');
+    const refreshTokenExpiration = params.get('refreshTokenExpiration');
+
+    if (
+      accessToken &&
+      refreshToken &&
+      accessTokenExpiration &&
+      refreshTokenExpiration
+    ) {
+      setCookie('accessToken', accessToken, {
+        expires: new Date(accessTokenExpiration),
+        path: '/',
+      });
+
+      setCookie('refreshToken', refreshToken, {
+        expires: new Date(refreshTokenExpiration),
+        path: '/',
+      });
+
+      navigate('/');
+    }
+  }, [location.search]);
+
   const navigate = useNavigate();
   const postNavClick = () => {
     navigate('/post');
   };
+
+  const [isLogin, setIsLogin] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsLogin(!!cookies.accessToken);
+  }, [cookies]);
   return (
     <>
-      <BannerImg src={mainBanner} />
       <FirstPageContainer>
         <BtnContainer>
           <TitleContainer>
             <Title>Entry에서는 좋은 인재를 찾고 있어요</Title>
             <KeyWord>EntryDSM</KeyWord>
           </TitleContainer>
-          <Btn onClick={postNavClick}>지원하러 가기</Btn>
+          <Btn onClick={postNavClick} isBlocked={!isLogin}>
+            지원하러 가기
+          </Btn>
         </BtnContainer>
       </FirstPageContainer>
       <SecondPageContainer>
@@ -60,12 +100,6 @@ const BtnContentContainer = styled.div`
   flex-direction: column;
   gap: 96px;
   align-items: center;
-`;
-
-const BtnAllContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 40px;
 `;
 
 const SecondPageContainer = styled.div`
@@ -126,6 +160,7 @@ const FirstTitleContainer = styled.div`
 `;
 
 const BtnContainer = styled.div`
+  height: fit-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -146,11 +181,14 @@ const FirstPageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  background-image: url(${mainBanner});
+  background-repeat: no-repeat;
+  background-size: cover;
 `;
 
 const BannerImg = styled.img`
   height: 100vh;
-  width: fit-content;
+  width: 100vw;
   position: absolute;
   top: 0;
   z-index: -1;
@@ -175,7 +213,9 @@ const KeyWord = styled.div`
   align-items: center;
 `;
 
-const Btn = styled.button`
+const Btn = styled.button<{ isBlocked: boolean }>`
+  opacity: ${({ isBlocked }) => (isBlocked ? 0.6 : 1)};
+  pointer-events: ${({ isBlocked }) => (isBlocked ? 'none' : 'cursor')};
   width: fit-content;
   padding: 20px 100px;
   font-size: 24px;
