@@ -6,6 +6,9 @@
       "path": "../../libs/design-token"
     },
     {
+      "path": "../entry-admin"
+    },
+    {
       "path": "./tsconfig.app.json"
     }
   ],
