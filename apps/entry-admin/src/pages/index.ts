@@ -5,3 +5,5 @@ export * from './ApplicationStatus';
 export * from './JobStatus';
 export * from './ApplicantDashboard';
 export * from './EditSupport';
+export * from './Edited';
+export * from './Completed';

@@ -33,16 +33,8 @@ export const AdminHeader = () => {
   const navigate = useNavigate();
   const navData = [
     {
-      name: '전형 일정 수정',
-      path: '/admission/schedule/edit',
-    },
-    {
-      name: '접수현황',
-      path: '/admin/admission/status',
-    },
-    {
-      name: '지원자 목록',
-      path: '/admission/applicants',
+      name: '채용 확인',
+      path: '/job-status',
     },
   ];
 
@@ -79,13 +71,6 @@ export const AdminHeader = () => {
           backgroundHoverColor={colors.green[700]}
         >
           로그아웃
-        </Button>
-        <Button
-          color={colors.gray[900]}
-          backgroundColor={'transparent'}
-          backgroundHoverColor={colors.gray[100]}
-        >
-          메인으로
         </Button>
       </ButtonContainer>
     </HeaderContainer>
@@ -237,6 +222,7 @@ const NavAllContainer = styled.div`
 const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
+  margin-right: 5%;
   gap: 40px;
 `;
 
@@ -245,6 +231,7 @@ const Button = styled.button<{
   color: string;
   backgroundHoverColor: string;
 }>`
+  width: 88px;
   cursor: pointer;
   outline: none;
   transition: 0.3s ease-in;
@@ -320,4 +307,5 @@ const LogoContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
+  cursor: pointer;
 `;

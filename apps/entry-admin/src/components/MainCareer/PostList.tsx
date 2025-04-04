@@ -25,6 +25,7 @@ export const PostList = ({ postName, keywords }: PostType) => {
       <CheckButtonWrapper>
         <Button
           children="지원자 보기"
+          isAdmin={true}
           onClick={() => navigate('/support-status')}
         />
       </CheckButtonWrapper>
