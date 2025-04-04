@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { colors } from '@entry/design-token';
@@ -6,27 +5,25 @@ import { writeIcon } from '@entry/ui';
 import { CareerItemProps } from '@entry/types';
 import { CareerItem, TitleBanner } from '../components';
 import { fetchAllPosts } from '../apis';
+import { useQuery } from '@tanstack/react-query';
 
 export const Main = () => {
-  const [careerItems, setCareerItems] = useState<CareerItemProps[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const {
+    data: careerItems = [],
+    isLoading,
+    error,
+  } = useQuery<CareerItemProps[]>({
+    queryKey: ['careerItems'],
+    queryFn: fetchAllPosts,
+    retry: false,
+    gcTime: 0,
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchAllPosts();
-        setCareerItems(data);
-      } catch (error) {
-        console.error('공고 데이터 불러오는 중 오류 발생', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  if (error) {
+    return <div>공고를 불러오는 중 오류가 발생했습니다: {error.message}</div>;
+  }
 
-    fetchData();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return <LoadingMessage>로딩 중...</LoadingMessage>;
   }
 
