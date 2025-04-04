@@ -1,8 +1,9 @@
+import { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
-import { github } from '../assets';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { TokenResponse } from '@entry/types';
+import { github } from '../assets';
 
 export const AdminLogin = () => {
   const navigate = useNavigate();
@@ -12,74 +13,169 @@ export const AdminLogin = () => {
 
   const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
   const GITHUB_REDIRECT_URL = import.meta.env.VITE_GITHUB_REDIRECT_URL;
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-  const handleGithubLogin = () => {
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${encodeURIComponent(
-      GITHUB_REDIRECT_URL
-    )}&scope=user:email,read:org`;
+  const handleError = useCallback((error: unknown) => {
+    if (axios.isAxiosError(error)) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        if (error.response?.data === 'Not authenticated') {
+          setError(
+            '인증되지 않은 사용자입니다. 조직에 가입된 사용자만 접근 가능합니다.'
+          );
+        } else {
+          setError(`인증 실패: ${error.response?.data || error.message}`);
+        }
+      } else {
+        setError(
+          `서버 오류: ${error.response?.status} ${
+            error.response?.data || error.message
+          }`
+        );
+      }
+    } else if (error instanceof Error) {
+      setError(`오류 발생: ${error.message}`);
+    } else {
+      setError('알 수 없는 오류가 발생했습니다');
+    }
+    setLoading(false);
+  }, []);
+
+  const saveTokens = useCallback((tokens: TokenResponse) => {
+    const {
+      accessToken,
+      refreshToken,
+      accessTokenExpiration,
+      refreshTokenExpiration,
+    } = tokens;
+
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+
+    if (accessTokenExpiration) {
+      localStorage.setItem('accessTokenExpiration', accessTokenExpiration);
+    }
+
+    if (refreshTokenExpiration) {
+      localStorage.setItem('refreshTokenExpiration', refreshTokenExpiration);
+    }
+  }, []);
+
+  const handleGithubLogin = useCallback(() => {
+    console.log('GitHub 로그인 시작');
+    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${GITHUB_REDIRECT_URL}&scope=user:email,read:org`;
     window.location.href = githubAuthUrl;
-  };
+  }, [GITHUB_CLIENT_ID, GITHUB_REDIRECT_URL]);
+
+  const handleOAuthProcess = useCallback(
+    async (code: string) => {
+      setLoading(true);
+      setError('');
+      console.log('GitHub 인증 코드 확인, 인증 프로세스 시작');
+
+      try {
+        console.log('1단계: GitHub 코드로 GitHub 액세스 토큰 요청');
+        const authResponse = await axios.get(`${BASE_URL}/api/github/auth`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          withCredentials: true,
+        });
+
+        if (!authResponse.data || !authResponse.data.githubAccessToken) {
+          throw new Error('GitHub 액세스 토큰을 받지 못했습니다');
+        }
+
+        const { githubAccessToken } = authResponse.data;
+        console.log('GitHub 액세스 토큰 받음, 2단계 진행');
+
+        try {
+          console.log('2단계: 내부 시스템 토큰 요청');
+          const authenticationResponse = await axios.get<TokenResponse>(
+            `${BASE_URL}/api/github/auth/authentication`,
+            {
+              headers: {
+                Authorization: `Bearer ${githubAccessToken}`,
+                'Content-Type': 'application/json',
+              },
+              withCredentials: true,
+            }
+          );
+
+          saveTokens(authenticationResponse.data);
+          console.log('인증 완료, 관리자 페이지로 이동');
+          navigate('/admin', { replace: true });
+        } catch (authError) {
+          handleError(authError);
+        }
+      } catch (error) {
+        console.error('GitHub 토큰 획득 오류:', error);
+        handleError(error);
+      }
+    },
+    [BASE_URL, handleError, navigate, saveTokens]
+  );
 
   useEffect(() => {
-    const handleOAuthRedirect = async () => {
-      const urlParams = new URLSearchParams(location.search);
-      const code = urlParams.get('code');
+    const urlParams = new URLSearchParams(location.search);
+    const accessToken = urlParams.get('accessToken');
+    const refreshToken = urlParams.get('refreshToken');
+    const accessTokenExpiration = urlParams.get('accessTokenExpiration');
+    const refreshTokenExpiration = urlParams.get('refreshTokenExpiration');
+    const code = urlParams.get('code');
+    const errorParam = urlParams.get('error');
 
-      if (code) {
-        setLoading(true);
-        try {
-          console.log('Github 인증 코드 받음!', code);
-          const authResponse = await axios.post('/api/github/auth', {
-            code: code,
-          });
-          const { githubAccessToken } = authResponse.data;
+    if (errorParam) {
+      console.error('GitHub 인증 오류:', errorParam);
+      setError('GitHub 인증 중 오류가 발생했습니다: ' + errorParam);
+      return;
+    }
 
-          // 조직 확인, 토큰 받기
-          try {
-            const authenticationResponse = await axios.get(
-              '/api/github/auth/authentication',
-              {
-                headers: {
-                  Authorization: `Bearer ${githubAccessToken}`,
-                },
-              }
-            );
+    if (accessToken && refreshToken) {
+      console.log('URL에서 토큰 정보 감지');
+      saveTokens({
+        accessToken,
+        refreshToken,
+        accessTokenExpiration: accessTokenExpiration || undefined,
+        refreshTokenExpiration: refreshTokenExpiration || undefined,
+      });
+      console.log('토큰 정보 저장 완료, 관리자 페이지로 이동');
+      navigate('/admin', { replace: true });
+      return;
+    }
 
-            const { accessToken, refreshToken } = authenticationResponse.data;
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
-            navigate('/admin'); // 관리자 페이지로 리다이엑트
-          } catch (error) {
-            if (
-              axios.isAxiosError(error) &&
-              error.response &&
-              error.response.status === 403
-            ) {
-              setError('조직에 가입된 사용자만 접근 가능합니다.');
-              navigate('/api/github/auth/not/authentication');
-            } else {
-              setError('인증 과정에서 오류가 발생했습니다.');
-            }
-          }
-        } catch {
-          setError('GitHub 로그인 과정에서 오류가 발생했습니다.');
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-    handleOAuthRedirect();
-  }, [location, navigate]);
+    if (code) {
+      console.log('GitHub 인증 코드 확인, 인증 프로세스 시작');
+      handleOAuthProcess(code);
+    }
+  }, [location, navigate, saveTokens, handleOAuthProcess]);
+
+  useEffect(() => {
+    if (!loading) return;
+
+    const timeoutId = setTimeout(() => {
+      setError(
+        '서버 응답 시간이 초과되었습니다. 페이지를 새로고침하거나 나중에 다시 시도해주세요.'
+      );
+      setLoading(false);
+    }, 20000);
+
+    return () => clearTimeout(timeoutId);
+  }, [loading]);
 
   return (
     <LoginContainer>
       <LoginCard>
         <Title>로그인</Title>
-        <GithubButton onClick={handleGithubLogin}>
-          <GithubIcon src={github} alt="github" />
-          {loading ? '로그인 중...' : 'GitHub로 로그인하기'}
+        <GithubButton onClick={handleGithubLogin} disabled={loading}>
+          <GithubIcon src={github} alt="GitHub 로고" />
+          {loading ? '인증 처리 중...' : 'GitHub로 로그인하기'}
         </GithubButton>
         {error && <ErrorMessage>{error}</ErrorMessage>}
+        {loading && (
+          <LoadingMessage>
+            GitHub 인증 처리 중입니다. 잠시만 기다려주세요...
+          </LoadingMessage>
+        )}
         <NavDivider>
           <NavLinks>
             <NavLink onClick={() => navigate('/')}>홈</NavLink>
@@ -95,9 +191,23 @@ export const AdminLogin = () => {
 };
 
 const ErrorMessage = styled.div`
-  color: red;
+  color: #e74c3c;
   font-size: 14px;
   margin-top: 10px;
+  text-align: center;
+  padding: 8px;
+  background-color: #fdecea;
+  border-radius: 4px;
+`;
+
+const LoadingMessage = styled.div`
+  color: #3498db;
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+  padding: 8px;
+  background-color: #ebf5fb;
+  border-radius: 4px;
 `;
 
 const LoginContainer = styled.div`
@@ -105,10 +215,6 @@ const LoginContainer = styled.div`
   justify-content: center;
   align-items: center;
   height: 90vh;
-
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 `;
 
@@ -128,25 +234,30 @@ const Title = styled.h1`
   font-weight: bold;
 `;
 
-const GithubButton = styled.button`
+const GithubButton = styled.button<{ disabled?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 5px 16px;
+  padding: 8px 16px;
   border: none;
   border-radius: 10px;
   background-color: #1b1f23;
   color: white;
-  cursor: pointer;
   font-size: 19px;
   transition: background-color 0.2s;
   font-weight: bold;
+  opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
+
+  &:hover {
+    background-color: ${(props) => (props.disabled ? '#1b1f23' : '#2c3e50')};
+  }
 `;
 
 const GithubIcon = styled.img`
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
   margin-right: 10px;
 `;
 

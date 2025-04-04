@@ -17,9 +17,9 @@ export default defineConfig(() => ({
   plugins: [react()],
   resolve: {
     alias: {
-      '@org/entry-admin/layout': path.resolve(
+      '@org/entry-admin/components': path.resolve(
         __dirname,
-        '../entry-admin/src/layout'
+        '../entry-admin/src/components'
       ),
       '@org/entry-admin/routes': path.resolve(
         __dirname,

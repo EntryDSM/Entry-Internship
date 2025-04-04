@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { AdminLogin, Login } from './pages';
-import { AppLayout } from '@org/entry-admin/layout';
+import { AppLayout } from '@org/entry-admin/components';
 import { adminRoutes } from '@org/entry-admin/routes';
 
 const ProtectedRoute = ({ children }: { children: ReactNode }) => {

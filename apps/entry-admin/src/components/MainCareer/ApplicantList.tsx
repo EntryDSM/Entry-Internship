@@ -27,6 +27,7 @@ export const ApplicantList = ({
       <CheckButtonWrapper>
         <Button
           children="확인하기"
+          isAdmin={true}
           onClick={() => navigate(`/support/${reportId}`)}
         />
       </CheckButtonWrapper>
