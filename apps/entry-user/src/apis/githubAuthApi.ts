@@ -15,7 +15,22 @@ export const COOKIE_OPTIONS = {
 };
 
 export const githubAuthApi = {
-  getGithubAccessToken: async (): Promise<string> => {
+  handleGithubLogin: async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/github/auth`, {
+        headers: { 'Content-Type': 'application/json' },
+        withCredentials: true,
+      });
+
+      window.location.href = response.data;
+    } catch (error) {
+      console.error('GitHub 로그인 요청 실패:', error);
+
+      throw error;
+    }
+  },
+
+  getGithubAccessToken: async () => {
     try {
       const response = await axios.get<GithubAuthResponse>(
         `${BASE_URL}/api/github/auth`,
@@ -25,8 +40,6 @@ export const githubAuthApi = {
         }
       );
 
-      console.log('GitHub 액세스 토큰 응답:', response.data);
-
       if (!response.data?.githubAccessToken) {
         throw new Error('GitHub 액세스 토큰을 받지 못했습니다');
       }
@@ -34,6 +47,7 @@ export const githubAuthApi = {
       return response.data.githubAccessToken;
     } catch (error) {
       console.error('GitHub 액세스 토큰 요청 실패:', error);
+
       throw error;
     }
   },
@@ -42,8 +56,6 @@ export const githubAuthApi = {
     githubAccessToken: string
   ): Promise<TokenResponse> => {
     try {
-      console.log('GitHub 액세스 토큰으로 인증 요청');
-
       const response = await axios.get<TokenResponse>(
         `${BASE_URL}/api/github/auth/authentication`,
         {
@@ -54,14 +66,6 @@ export const githubAuthApi = {
           withCredentials: true,
         }
       );
-
-      console.log('인증 응답 데이터:', response.data);
-
-      if (!response.data.accessToken || !response.data.refreshToken) {
-        throw new Error(
-          '액세스 토큰 또는 리프레시 토큰이 응답에 존재하지 않습니다'
-        );
-      }
 
       return response.data;
     } catch (error) {
@@ -79,6 +83,7 @@ export const githubAuthApi = {
     const secondsUntilExpiration = Math.floor(
       (expirationDate.getTime() - now.getTime()) / 1000
     );
+
     return secondsUntilExpiration > 0 ? secondsUntilExpiration : undefined;
   },
 };
