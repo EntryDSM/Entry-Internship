@@ -1,14 +1,14 @@
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ReportInfo } from '@entry/types';
+import { ReportDetailInfo } from '@entry/types';
 import { fetchApplicantDetails } from '../apis';
 
 export const ApplicantDashboard = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const reportId = id ? parseInt(id, 10) : null;
-  const [users, setUsers] = useState<ReportInfo>();
+  const [users, setUsers] = useState<ReportDetailInfo>();
   const [loading, setLoding] = useState<boolean>(true);
 
   useEffect(() => {

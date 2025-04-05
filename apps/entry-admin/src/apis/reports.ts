@@ -1,4 +1,4 @@
-// 지원서 조회
+// 지원서 상세 조회
 export const fetchApplicantDetails = async (reportId: number) => {
   const reponse = await fetch(`/reports/${reportId}`);
   if (!reponse.ok) {

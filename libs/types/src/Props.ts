@@ -20,9 +20,17 @@ export interface ReportInfo {
   reportId: number;
   applicationName: string;
   studentId: string;
-  phoneNumber: string;
+}
+
+
+// 지원서 상세 조회
+export interface ReportDetailInfo {
+  reportId: number;
+  applicationName: string; // 이름
+  studentId: string;
+  phoneNumber: string; // "01041374208"
   programmingExperience: string; // VERY_GOOD, GOOD, AVERAGE, POOR, VERY_POOR
   major: string; // FRONTEND, DEVOPS, BACKEND, DESIGN
-  motivation: string;
+  motivation: string; // 지원동기
   selfIntroduction: string;
 }

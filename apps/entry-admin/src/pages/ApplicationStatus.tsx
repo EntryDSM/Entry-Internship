@@ -1,43 +1,44 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ApplicantList } from '../components/';
 import { ReportInfo } from '@entry/types';
+import axios from 'axios';
 
 export const ApplicationStatus = () => {
-  const [users, setUsers] = useState<ReportInfo[]>([
-    {
-      reportId: 1,
-      applicationName: '박지연',
-      studentId: '20230001',
-      phoneNumber: '010-1234-5678',
-      programmingExperience: 'VERY_GOOD', // VERY_GOOD, GOOD, AVERAGE, POOR, VERY_POOR
-      major: 'FRONTEND', // FRONTEND, DEVOPS, BACKEND, DESIGN
-      motivation: '프론트엔드 개발에 관심이 많습니다.',
-      selfIntroduction: '안녕하세요! 저는 열정적인 개발자입니다.',
-    },
-    {
-      reportId: 2,
-      applicationName: '최민수',
-      studentId: '20230002',
-      phoneNumber: '010-2345-6789',
-      programmingExperience: 'GOOD',
-      major: 'BACKEND',
-      motivation: '백엔드 시스템 구축에 흥미를 느낍니다.',
-      selfIntroduction: '저는 성실하고 책임감 있는 개발자로 성장하고 싶습니다.',
-    },
-  ]);
+  const [applicants, setApplicants] = useState<ReportInfo[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchApplicants = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get<ReportInfo[]>('/reports');
+        setApplicants(response.data);
+      } catch (err) {
+        console.error('지워자 목록을 불러오는 중 오류가 발생했습니다.', err);
+        setError('지원자 정보를 불러올 수 없습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchApplicants();
+  }, []);
+
+  if (loading) return <div>로딩 중...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <JobStatusContainer>
-      {users.length > 0 ? (
+      {applicants.length > 0 ? (
         <>
-          {users.map((info) => (
+          {applicants.map((info) => (
             <ApplicantList
               key={info.reportId}
               reportId={info.reportId}
               applicationName={info.applicationName}
-              major={info.major}
-              programmingExperience={info.programmingExperience}
+              studentId={info.studentId}
             />
           ))}
         </>
