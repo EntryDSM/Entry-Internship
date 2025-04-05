@@ -15,3 +15,18 @@ export const fetchPostDetails = async (noticeId: number) => {
   }
   return reponse.json();
 };
+
+// 공고 삭제
+export const fetchDeletePosts = async (noticeId: number) => {
+  const reponse = await fetch(`/notice/${noticeId}`, {
+    method: 'DELETE',
+    headers: {
+      ContentType: 'application/json',
+    },
+  });
+
+  if (!reponse.ok) {
+    throw new Error('공고 삭제 실패ㅜ');
+  }
+  return reponse.json();
+};
