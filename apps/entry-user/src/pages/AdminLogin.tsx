@@ -66,7 +66,9 @@ export const AdminLogin = () => {
   );
 
   const authMutation = useMutation({
-    mutationFn: githubAuthApi.processGithubAuth,
+    mutationFn: async (githubAccessToken: string) => {
+      return await githubAuthApi.authenticateWithGithubToken(githubAccessToken);
+    },
     onSuccess: (data) => {
       saveTokensToCookies(data);
       setLoading(false);
@@ -103,34 +105,13 @@ export const AdminLogin = () => {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    const accessToken = urlParams.get('accessToken');
-    const refreshToken = urlParams.get('refreshToken');
-    const accessTokenExpiration = urlParams.get('accessTokenExpiration');
-    const refreshTokenExpiration = urlParams.get('refreshTokenExpiration');
-    const code = urlParams.get('code');
-    const errorParam = urlParams.get('error');
+    const githubAccessToken = urlParams.get('githubAccessToken');
 
-    if (errorParam) {
-      setError('GitHub 인증 중 오류가 발생했습니다: ' + errorParam);
-      return;
-    }
-
-    if (accessToken && refreshToken) {
-      saveTokensToCookies({
-        accessToken,
-        refreshToken,
-        accessTokenExpiration: accessTokenExpiration || undefined,
-        refreshTokenExpiration: refreshTokenExpiration || undefined,
-      });
-      navigate('/admin', { replace: true });
-      return;
-    }
-
-    if (code) {
+    if (githubAccessToken) {
       setLoading(true);
-      authMutation.mutate(code);
+      authMutation.mutate(githubAccessToken);
     }
-  }, [location, navigate, authMutation, saveTokensToCookies]);
+  }, [location, authMutation]);
 
   useEffect(() => {
     if (!loading) return;
