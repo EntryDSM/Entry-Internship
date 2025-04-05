@@ -5,6 +5,7 @@ import { colors } from '@entry/design-token';
 import { kebabIcon } from '@entry/ui';
 import { useModal } from '@entry/hooks';
 import { CareerItemProps } from '@entry/types';
+import { fetchDeletePosts } from '../../apis';
 
 type CareerITemType = Pick<
   CareerItemProps,
@@ -20,6 +21,7 @@ export const CareerItem = ({
 }: CareerITemType) => {
   const navigate = useNavigate();
   const [showDelete, setShowDelete] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const dropMenuRef = useRef<HTMLDivElement | null>(null);
 
   const { isOpen: isModalOpen, openModal, closeModal } = useModal();
@@ -35,8 +37,16 @@ export const CareerItem = ({
     openModal();
   };
 
-  const handleConfirmDelete = () => {
-    console.log(`게시글 ${noticeId} 삭제`); // 실제 삭제 API 호출
+  const handleConfirmDelete = async () => {
+    console.log(`공고${noticeId} 삭제 시작`);
+    setIsDeleting(true);
+    try {
+      await fetchDeletePosts(noticeId);
+    } catch (error) {
+      console.error('삭제 실패ㅜ', error);
+    } finally {
+      setIsDeleting(false);
+    }
     closeModal();
   };
 
@@ -96,7 +106,12 @@ export const CareerItem = ({
             <ModalDescription>정말로 삭제하시겠습니까?</ModalDescription>
             <ModalActions>
               <CancelButton onClick={closeModal}>취소</CancelButton>
-              <ConfirmButton onClick={handleConfirmDelete}>삭제</ConfirmButton>
+              <ConfirmButton
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? '삭제 중' : '삭제'}
+              </ConfirmButton>
             </ModalActions>
           </ModalContent>
         </ModalOverlay>
