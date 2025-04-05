@@ -6,6 +6,9 @@
       "path": "../../libs/ui"
     },
     {
+      "path": "../../libs/types"
+    },
+    {
       "path": "../../libs/design-token"
     },
     {
