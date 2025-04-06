@@ -32,9 +32,6 @@
   "include": ["src/**/*.js", "src/**/*.jsx", "src/**/*.ts", "src/**/*.tsx"],
   "references": [
     {
-      "path": "../../libs/types/tsconfig.lib.json"
-    },
-    {
       "path": "../../libs/hooks/tsconfig.lib.json"
     },
     {
@@ -42,6 +39,12 @@
     },
     {
       "path": "../../libs/ui/tsconfig.lib.json"
+    },
+    {
+      "path": "../../libs/types/tsconfig.lib.json"
+    },
+    {
+      "path": "../entry-user/tsconfig.app.json"
     }
   ]
 }

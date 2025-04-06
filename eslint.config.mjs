@@ -23,6 +23,8 @@ export default [
           allow: [
             '^.*/eslint(\\.base)?\\.config\\.[cm]?js$',
             '@org/entry-admin/*',
+            '@org/entry-user/*',
+            '@org/entry-user',
           ],
           depConstraints: [
             {

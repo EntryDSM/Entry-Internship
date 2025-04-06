@@ -3,6 +3,8 @@ import { TokenResponse } from '@entry/types';
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
+console.log('BASE_URL:', BASE_URL); // 디버깅용 로그
+
 export interface GithubAuthResponse {
   githubAccessToken: string;
 }
@@ -15,61 +17,104 @@ export const COOKIE_OPTIONS = {
 };
 
 export const githubAuthApi = {
+  // GitHub 로그인 처리
   handleGithubLogin: async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/api/github/auth`, {
-        headers: { 'Content-Type': 'application/json' },
-        withCredentials: true,
-      });
-
-      window.location.href = response.data;
-    } catch (error) {
-      console.error('GitHub 로그인 요청 실패:', error);
-
-      throw error;
-    }
-  },
-
-  getGithubAccessToken: async () => {
-    try {
-      const response = await axios.get<GithubAuthResponse>(
-        `${BASE_URL}/api/github/auth`,
-        {
-          headers: { 'Content-Type': 'application/json' },
-          withCredentials: true,
-        }
+      console.log(
+        'Attempting GitHub login with URL:',
+        `${BASE_URL}/api/github/auth/authentication`
       );
 
-      if (!response.data?.githubAccessToken) {
-        throw new Error('GitHub 액세스 토큰을 받지 못했습니다');
-      }
-
-      return response.data.githubAccessToken;
-    } catch (error) {
-      console.error('GitHub 액세스 토큰 요청 실패:', error);
-
-      throw error;
-    }
-  },
-
-  authenticateWithGithubToken: async (
-    githubAccessToken: string
-  ): Promise<TokenResponse> => {
-    try {
-      const response = await axios.get<TokenResponse>(
+      const response = await axios.get(
         `${BASE_URL}/api/github/auth/authentication`,
         {
           headers: {
-            Authorization: `Bearer ${githubAccessToken}`,
             'Content-Type': 'application/json',
+            Accept: 'application/json',
           },
           withCredentials: true,
         }
       );
 
+      console.log('GitHub login response:', response.data);
+
+      // 반환된 URL로 리다이렉트
+      window.location.href = response.data;
+    } catch (error) {
+      console.error('GitHub 로그인 요청 실패:', error);
+
+      // 에러 세부 정보 로깅
+      if (axios.isAxiosError(error)) {
+        console.error('Error details:', {
+          response: error.response?.data,
+          status: error.response?.status,
+          headers: error.response?.headers,
+        });
+      }
+
+      throw error;
+    }
+  },
+
+  // GitHub 토큰으로 인증하기
+  authenticateWithGithubToken: async (
+    githubAccessToken: string
+  ): Promise<TokenResponse> => {
+    try {
+      console.log('Authenticating with GitHub token');
+
+      const response = await axios.get(
+        `${BASE_URL}/api/github/auth/authentication`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          params: {
+            githubAccessToken: githubAccessToken,
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log('Authentication response:', response.data);
+
       return response.data;
     } catch (error) {
       console.error('GitHub 토큰 인증 실패:', error);
+
+      // 에러 세부 정보 로깅
+      if (axios.isAxiosError(error)) {
+        console.error('Error details:', {
+          response: error.response?.data,
+          status: error.response?.status,
+          headers: error.response?.headers,
+        });
+      }
+
+      // 인증되지 않은 사용자 처리
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        try {
+          const notAuthResponse = await axios.get(
+            `${BASE_URL}/api/github/auth/not/authentication`,
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+              },
+              withCredentials: true,
+            }
+          );
+
+          console.log('Not authenticated response:', notAuthResponse.data);
+
+          throw new Error(notAuthResponse.data);
+        } catch (notAuthError) {
+          console.error('Not authenticated error:', notAuthError);
+          throw notAuthError;
+        }
+      }
+
       throw error;
     }
   },
