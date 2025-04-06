@@ -20,8 +20,9 @@ export const AdminLogin = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
-  const GITHUB_REDIRECT_URL = import.meta.env.VITE_GITHUB_REDIRECT_URL;
+  // const GITHUB_CLIENT_ID = import.meta.env.VITE_GITHUB_CLIENT_ID;
+  // const GITHUB_REDIRECT_URL = import.meta.env.VITE_GITHUB_REDIRECT_URL;
+  const BASE_URL = import.meta.env.VITE_BASE_URL;
 
   const saveTokensToCookies = useCallback(
     (tokens: TokenResponse) => {
@@ -99,9 +100,9 @@ export const AdminLogin = () => {
   });
 
   const handleGithubLogin = useCallback(() => {
-    const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&redirect_uri=${GITHUB_REDIRECT_URL}&scope=user:email,read:org`;
-    window.location.href = githubAuthUrl;
-  }, [GITHUB_CLIENT_ID, GITHUB_REDIRECT_URL]);
+    const githubAuthUrl = `${BASE_URL}/api/github/auth`;
+    window.open(githubAuthUrl, '_blank');
+  }, [BASE_URL]);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
