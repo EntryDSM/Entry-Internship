@@ -5,7 +5,7 @@ import { colors } from '@entry/design-token';
 import { kebabIcon } from '@entry/ui';
 import { useModal } from '@entry/hooks';
 import { CareerItemProps } from '@entry/types';
-import { useDeletePostApi } from '@org/entry-admin/apis';
+import { useDeletePostApi } from '../../apis';
 
 type CareerITemType = Pick<
   CareerItemProps,
