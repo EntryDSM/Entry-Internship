@@ -4,4 +4,4 @@ export * from './logoutApi';
 export * from './postAllApi';
 export * from './applicationWritingApi';
 export * from './postDetailApi';
-export * from './githubAuthApi';
+export * from './useGithubAuth';
