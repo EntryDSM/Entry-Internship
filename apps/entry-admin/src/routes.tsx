@@ -14,7 +14,7 @@ export const adminRoutes: RouteObject[] = [
   { path: 'job-status/:noticeId', element: <DetailPost /> },
   { path: 'job-status', element: <JobStatus /> },
   { path: 'create-support', element: <CreateSupport /> },
-  { path: 'support-status', element: <ApplicationStatus /> },
+  { path: 'support', element: <ApplicationStatus /> },
   { path: 'support/:noticeId', element: <ApplicantDashboard /> },
   { path: 'edit-support/:noticeId', element: <EditSupport /> },
 ];

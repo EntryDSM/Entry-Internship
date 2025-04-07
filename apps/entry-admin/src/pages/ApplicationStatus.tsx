@@ -1,33 +1,12 @@
 import styled from '@emotion/styled';
-import { useEffect, useState } from 'react';
-import { ApplicantList } from '../components/';
-import { ReportInfo } from '@entry/types';
-import axios from 'axios';
+import { ApplicantList } from '../components';
+import { useApplicantsApi } from '../apis';
 
 export const ApplicationStatus = () => {
-  const [applicants, setApplicants] = useState<ReportInfo[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const { data: applicants = [], isLoading, isError } = useApplicantsApi();
 
-  useEffect(() => {
-    const fetchApplicants = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get<ReportInfo[]>('/reports');
-        setApplicants(response.data);
-      } catch (err) {
-        console.error('지워자 목록을 불러오는 중 오류가 발생했습니다.', err);
-        setError('지원자 정보를 불러올 수 없습니다.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchApplicants();
-  }, []);
-
-  if (loading) return <div>로딩 중...</div>;
-  if (error) return <div>{error}</div>;
+  if (isLoading) return <div>로딩 중...</div>;
+  if (isError) return <div>지원자 정보를 불러올 수 없습니다.</div>;
 
   return (
     <JobStatusContainer>
