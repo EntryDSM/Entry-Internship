@@ -18,6 +18,9 @@
       "path": "../../libs/types"
     },
     {
+      "path": "../entry-user"
+    },
+    {
       "path": "./tsconfig.app.json"
     }
   ],
