@@ -4,51 +4,43 @@ import styled from '@emotion/styled';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ImgStore, ApplyCond } from '../components';
 import { Button } from '@entry/ui';
-import { useQuery } from '@tanstack/react-query';
 import { postDetailApi } from '../apis';
-import { useCookies } from 'react-cookie';
 
 export const DetailPost = () => {
-  const [datas, setDatas] = useState({
+  const [datas, setDatas] = useState<{
+    noticeId: string;
+    title: string;
+    keyWord: string[];
+    titleImageUrl: string;
+    description: [{ title: string; content: string }];
+    focusRecruit: boolean;
+    important: boolean;
+  }>({
     noticeId: '',
     title: '',
     keyWord: [],
     titleImageUrl: '',
     description: [],
-    isFocusRecruit: false,
-    isImportant: false,
+    focusRecruit: false,
+    important: false,
   });
 
   const navigate = useNavigate();
   const { id } = useParams();
-  const postId = id ? parseInt(id) : null;
-  const [cookies] = useCookies(['accessToken']);
+  const noticeId = id ? parseInt(id) : null;
 
-  const { data: postData } = useQuery({
-    queryKey: ['article', postId],
-    queryFn: () => postDetailApi(postId, cookies.accessToken),
-    enabled: Boolean(postId) && Boolean(cookies.accessToken),
-  });
+  const { data } = postDetailApi(noticeId);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
-    if (postData?.data) {
-      setDatas({
-        noticeId: postData.data.noticeId || '',
-        title: postData.data.title || '',
-        keyWord: postData.data.keyword || [],
-        titleImageUrl:
-          postData.data.titleImageUrl ||
-          'https://www.figma.com/design/AfxiCQtFhC2KVS1RAvokxZ/EntryDSM_10%EA%B8%B0%F0%9F%A9%B7?node-id=2400-77&t=aHo1oBRKTDfo7ElP-4',
-        description: postData.data.description || [],
-        isFocusRecruit: postData.data.isFocusRecruit || false,
-        isImportant: postData.data.isImportant || false,
-      });
+    if (data) {
+      setDatas(data);
+      console.log('✅ dd:', data);
     }
-  }, [postData]);
+  }, [data]);
 
   const moveToSupport = () => {
     navigate(`/post/${id}/application-writing`);
@@ -78,8 +70,8 @@ export const DetailPost = () => {
           <PostTitleContainer>
             <ListItemContent>{datas.title}</ListItemContent>
             <ImportantList>
-              {datas.isFocusRecruit && <Focus>집중채용</Focus>}
-              {datas.isImportant && <Important>중요</Important>}
+              {datas.focusRecruit && <Focus>집중채용</Focus>}
+              {datas.important && <Important>중요</Important>}
             </ImportantList>
           </PostTitleContainer>
 

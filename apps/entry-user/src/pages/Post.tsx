@@ -19,8 +19,9 @@ export const Post = () => {
     {
       title: string;
       keyWord: string[];
-      isFocusRecruit: boolean;
-      isImportant: boolean;
+      focusRecruit: boolean;
+      important: boolean;
+      noticeId: string;
     }[]
   >([]);
 
@@ -53,10 +54,10 @@ export const Post = () => {
         <CarrerTitle>채용 공고</CarrerTitle>
         {datas.map((data) => (
           <CarrerItem
-            onClick={() => navigate('/post/1')}
+            onClick={() => navigate(`/post/${data.noticeId}`)}
             title={data.title}
-            isFocusRecruit={data.isFocusRecruit}
-            isImportant={data.isImportant}
+            isFocusRecruit={data.focusRecruit}
+            isImportant={data.important}
             keyWord={data.keyWord}
           />
         ))}
