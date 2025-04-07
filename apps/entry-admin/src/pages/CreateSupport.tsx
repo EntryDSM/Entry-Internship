@@ -150,7 +150,7 @@ export const CreateSupport = () => {
             <Label label="타이틀 사진" />
             <ImgContainer>
               <ImgBtnContainer>
-                <Button onClick={imgBtnClick} />
+                <Button isAdmin={true} onClick={imgBtnClick} />
               </ImgBtnContainer>
               {datas.imgUrl && <KeyWord>{datas.imgUrl}</KeyWord>}
             </ImgContainer>
@@ -173,7 +173,7 @@ export const CreateSupport = () => {
                 </DeleteButton>
               </InputTextAreaContainer>
             ))}
-            <Button onClick={areaInputAddClick} />
+            <Button isAdmin={true} onClick={areaInputAddClick} />
           </>
         </InputContainer>
         <CheckContainer>
