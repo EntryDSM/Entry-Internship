@@ -130,7 +130,6 @@ export const CommonHeader = ({ isAdmin }: IHeaderType) => {
   const logoutClick = () => {
     console.log('logout');
     apiLogout.mutate();
-    //로그아웃하는 api
   };
 
   useEffect(() => {
