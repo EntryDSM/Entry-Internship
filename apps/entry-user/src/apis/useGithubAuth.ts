@@ -1,82 +1,48 @@
-import { useCookies } from 'react-cookie';
 import { useMutation } from '@tanstack/react-query';
 import { instance } from './instance';
-
-interface AuthResponse {
-  accessToken: string;
-  accessTokenExpiration: string;
-  refreshToken: string;
-  refreshTokenExpiration: string;
-}
-
-type AuthResult =
-  | { type: 'auth'; data: AuthResponse }
-  | { type: 'not_auth'; message: string };
+import { useCookies } from 'react-cookie';
 
 export const useGithubAuth = () => {
-  const [cookies, setCookie, removeCookie] = useCookies([
-    'accessToken',
-    'refreshToken',
-  ]);
-
-  // 토큰 저장 함수
-  const saveTokens = (data: AuthResponse) => {
-    if (
-      !data.accessToken ||
-      !data.refreshToken ||
-      !data.accessTokenExpiration ||
-      !data.refreshTokenExpiration
-    ) {
-      console.log('토큰 정보가 불완전함');
-      return false;
-    }
-
-    setCookie('accessToken', data.accessToken, {
-      expires: new Date(data.accessTokenExpiration),
-      path: '/',
-    });
-
-    setCookie('refreshToken', data.refreshToken, {
-      expires: new Date(data.refreshTokenExpiration),
-      path: '/',
-    });
-
-    console.log('토큰 정상 발급됨');
-    return true;
-  };
+  const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
 
   return useMutation({
     mutationFn: async () => {
-      try {
-        // 인증 시도
-        const authResponse = await instance.get<AuthResponse>(
-          '/api/github/auth/authentication'
-        );
-        return { type: 'auth', data: authResponse.data } as const;
-      } catch (error) {
-        // 인증 실패 시 미인증 엔드포인트 호출
-        const notAuthResponse = await instance.get<{ type: string }>(
-          '/api/github/auth/not/authentication'
-        );
-        return {
-          type: 'not_auth',
-          message: notAuthResponse.data.type,
-        } as const;
-      }
+      const response = await instance.get('/api/github/auth/authentication');
+      return response.request?.responseURL || response.config.url;
     },
-    onSuccess: (result) => {
-      if (result.type === 'auth') {
-        saveTokens(result.data);
+    onSuccess: (url) => {
+      console.log('성공');
+      console.log('로그인 URL:', url);
+      const params = new URL(url).searchParams;
+
+      const accessToken = params.get('accessToken');
+      const refreshToken = params.get('refreshToken');
+      const accessTokenExpiration = params.get('accessTokenExpiration');
+      const refreshTokenExpiration = params.get('refreshTokenExpiration');
+
+      if (
+        accessToken &&
+        refreshToken &&
+        accessTokenExpiration &&
+        refreshTokenExpiration
+      ) {
+        console.log('토큰 정상 추출:', accessToken, refreshToken);
+
+        setCookie('accessToken', accessToken, {
+          expires: new Date(accessTokenExpiration),
+          path: '/',
+        });
+
+        setCookie('refreshToken', refreshToken, {
+          expires: new Date(refreshTokenExpiration),
+          path: '/',
+        });
       } else {
-        console.log('인증되지 않은 사용자:', result.message);
-        removeCookie('accessToken', { path: '/' });
-        removeCookie('refreshToken', { path: '/' });
+        console.log('토큰을 찾을 수 없음');
       }
     },
     onError: (error) => {
-      console.error('인증 오류:', error);
-      removeCookie('accessToken', { path: '/' });
-      removeCookie('refreshToken', { path: '/' });
+      console.error('로그인 오류:', error);
     },
   });
 };
