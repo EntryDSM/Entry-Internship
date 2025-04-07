@@ -8,6 +8,8 @@ import { usePostAllApi } from '../apis';
 export const Main = () => {
   const { data: careerItems = [], isLoading, isError } = usePostAllApi();
 
+  console.log(isLoading);
+
   if (isLoading) {
     return <LoadingMessage>로딩 중...</LoadingMessage>;
   }

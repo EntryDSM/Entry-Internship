@@ -3,13 +3,7 @@
   "include": [],
   "references": [
     {
-      "path": "../../libs/types"
-    },
-    {
       "path": "../../libs/hooks"
-    },
-    {
-      "path": "../../libs/design-token"
     },
     {
       "path": "../../libs/ui"
@@ -18,7 +12,7 @@
       "path": "../../libs/types"
     },
     {
-      "path": "../entry-user"
+      "path": "../../libs/design-token"
     },
     {
       "path": "./tsconfig.app.json"
