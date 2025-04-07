@@ -94,7 +94,9 @@ export const DetailPost = () => {
           </LeftContainer>
 
           <RightContainer>
-            <TitleImg src={datas.titleImageUrl} />
+            <ImgContainer>
+              <TitleImg src={datas.titleImageUrl} />
+            </ImgContainer>
             <ButtonWrapper>
               <Button userType="user" onClick={moveToSupport}>
                 지원하기
@@ -117,7 +119,7 @@ const ContentContainer = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-  width: 420px;
+  width: 508px;
   min-width: 300px;
 
   button {
@@ -127,9 +129,20 @@ const ButtonWrapper = styled.div`
   }
 `;
 
+const ImgContainer = styled.div`
+  width: 508px;
+  height: 422px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  overflow: hidden;
+`;
+
 const TitleImg = styled.img`
-  width: 420px;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `;
 
 const RightContainer = styled.div`
@@ -206,7 +219,7 @@ const ListItemContent = styled.div`
   font-weight: 500;
   color: ${colors.gray[500]};
   font-weight: bold;
-  min-width: 300px;
+  width: fit-content;
 `;
 
 const PostTitleContainer = styled.div`
