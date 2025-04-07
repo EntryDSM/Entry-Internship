@@ -52,15 +52,20 @@ export const Post = () => {
       </TitleContainer>
       <CarrersContainer>
         <CarrerTitle>채용 공고</CarrerTitle>
-        {datas.map((data) => (
-          <CarrerItem
-            onClick={() => navigate(`/post/${data.noticeId}`)}
-            title={data.title}
-            isFocusRecruit={data.focusRecruit}
-            isImportant={data.important}
-            keyWord={data.keyWord}
-          />
-        ))}
+        {datas.length > 0 ? (
+          datas.map((data) => (
+            <CarrerItem
+              key={data.noticeId}
+              onClick={() => navigate(`/post/${data.noticeId}`)}
+              title={data.title}
+              isFocusRecruit={data.focusRecruit}
+              isImportant={data.important}
+              keyWord={data.keyWord}
+            />
+          ))
+        ) : (
+          <div>채용 공고가 없습니다.</div>
+        )}
       </CarrersContainer>
     </MainContainer>
   );
