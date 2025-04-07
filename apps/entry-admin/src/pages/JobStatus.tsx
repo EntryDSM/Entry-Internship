@@ -1,37 +1,35 @@
 import styled from '@emotion/styled';
-import { useState } from 'react';
 import { PostList } from '../components';
-
-type PostType = {
-  postName: string;
-  keyword: string[];
-};
+import { usePostAllApi } from '../apis';
 
 export const JobStatus = () => {
-  const [posts, setPosts] = useState<PostType[]>([
-    {
-      postName: '피자 배달부 모집 ( 정규직 )',
-      keyword: ['개발', 'Go언어', '백엔드'],
-    },
-    {
-      postName: '과자 배달부 모집 ( 정규직 )',
-      keyword: ['개발', 'Go언어', '프론트엔드'],
-    },
-    {
-      postName: '피자 배달부 모집 ( 정규직 )',
-      keyword: ['개발', 'Go언어', '백엔드'],
-    },
-  ]);
+  const { data: careerItems = [], isLoading, isError } = usePostAllApi();
+
+  if (isLoading) {
+    return (
+      <JobStatusContainer>
+        <div>데이터를 불러오는 중...</div>
+      </JobStatusContainer>
+    );
+  }
+
+  if (isError) {
+    return (
+      <JobStatusContainer>
+        <div>데이터를 불러오는 데 실패했습니다.</div>
+      </JobStatusContainer>
+    );
+  }
 
   return (
     <JobStatusContainer>
-      {posts.length > 0 ? (
+      {careerItems.length > 0 ? (
         <>
-          {posts.map((post, index) => (
+          {careerItems.map((post) => (
             <PostList
-              key={index}
-              postName={post.postName}
-              keywords={post.keyword}
+              key={post.noticeId}
+              postName={post.title}
+              keywords={post.keyWord}
             />
           ))}
         </>

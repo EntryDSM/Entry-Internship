@@ -8011,7 +8011,7 @@ raw-body@2.5.2:
 
 react-cookie@^8.0.1:
   version "8.0.1"
-  resolved "https://registry.npmjs.org/react-cookie/-/react-cookie-8.0.1.tgz"
+  resolved "https://registry.yarnpkg.com/react-cookie/-/react-cookie-8.0.1.tgz#0d7f5112c9003b61c70d3d53f1f0a5b741e9f2e9"
   integrity sha512-QNdAd0MLuAiDiLcDU/2s/eyKmmfMHtjPUKJ2dZ/5CcQ9QKUium4B3o61/haq6PQl/YWFqC5PO8GvxeHKhy3GFA==
   dependencies:
     "@types/hoist-non-react-statics" "^3.3.6"
