@@ -1,26 +1,13 @@
 import styled from '@emotion/styled';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ReportDetailInfo } from '@entry/types';
-import { fetchApplicantDetails } from '../apis';
-import { useQuery } from '@tanstack/react-query';
+import { useApplicantDetailsApi } from '../apis';
 
 export const ApplicantDashboard = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const reportId = id ? parseInt(id, 10) : null;
 
-  const {
-    data: users,
-    isLoading,
-    isError,
-  } = useQuery<ReportDetailInfo>({
-    queryKey: ['applicantDetails', reportId],
-    queryFn: () =>
-      reportId !== null
-        ? fetchApplicantDetails(reportId)
-        : Promise.reject('유효하지 않은 지원서ID 입니다.'),
-    enabled: reportId !== null,
-  });
+  const { data: users, isLoading, isError } = useApplicantDetailsApi(reportId);
 
   if (isLoading) {
     return <LoadingMessage>로딩 중...</LoadingMessage>;

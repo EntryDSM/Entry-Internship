@@ -6,7 +6,7 @@ import { entryLogoIcon } from '../../assets';
 export const TitleBanner = () => {
   return (
     <TitleContainer>
-      <Img src={TitleImgIcon} />
+      <Img src={TitleImgIcon} width="100%" height="300px" />
       <MentContainer>
         <Top>
           <TopMent>
@@ -23,12 +23,12 @@ export const TitleBanner = () => {
 };
 
 const Img = styled.img`
-  margin-right: 18px;
-
-  img {
-    width: 100%;
-    height: 100px;
-  }
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  margin: 0;
+  padding: 0;
+  display: block;
 `;
 
 const DSM = styled.div`
@@ -74,4 +74,9 @@ const MentContainer = styled.div`
 
 const TitleContainer = styled.div`
   position: relative;
+  width: 100%;
+  height: 300px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 `;
