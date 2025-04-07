@@ -3,7 +3,7 @@ import { instance } from './instance';
 import { useCookies } from 'react-cookie';
 
 const fetchPostAllApi = async (token: string) => {
-  const { data } = await instance.get('/notice', {
+  const { data } = await instance.get('/notices', {
     headers: {
       Authorization: `Bearer ${token}`,
     },

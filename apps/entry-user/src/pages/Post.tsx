@@ -22,18 +22,9 @@ export const Post = () => {
       isFocusRecruit: boolean;
       isImportant: boolean;
     }[]
-  >([
-    {
-      title: '',
-      keyWord: [],
-      isFocusRecruit: false,
-      isImportant: false,
-    },
-  ]);
+  >([]);
 
   useEffect(() => {
-    console.log(' dd:', data);
-
     if (data) {
       setDatas(data);
       console.log('✅ dd:', data);
