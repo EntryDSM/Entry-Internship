@@ -65,16 +65,18 @@ const GithubButton = styled.button<{ disabled?: boolean }>`
   padding: 8px 16px;
   border: none;
   border-radius: 10px;
-  background-color: #1b1f23;
+  background-color: #24292e;
   color: white;
   font-size: 19px;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
   font-weight: bold;
   opacity: ${(props) => (props.disabled ? 0.5 : 1)};
   cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 
   &:hover {
-    background-color: ${(props) => (props.disabled ? '#1b1f23' : '#2c3e50')};
+    background-color: #24292e;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
   }
 `;
 
