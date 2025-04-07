@@ -10,7 +10,7 @@ const fetchPostAllApi = async (token: string): Promise<CareerItemProps[]> => {
       Authorization: `Bearer ${token}`,
     },
   });
-  return data;
+  return Array.isArray(data) ? data : data.data || [];
 };
 
 export const usePostAllApi = (): UseQueryResult<CareerItemProps[], Error> => {

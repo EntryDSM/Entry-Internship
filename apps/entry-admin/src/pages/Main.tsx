@@ -6,10 +6,18 @@ import { CareerItem, TitleBanner } from '../components';
 import { usePostAllApi } from '../apis';
 
 export const Main = () => {
-  const { data: careerItems = [], isLoading } = usePostAllApi();
+  const { data: careerItems = [], isLoading, isError } = usePostAllApi();
 
   if (isLoading) {
     return <LoadingMessage>로딩 중...</LoadingMessage>;
+  }
+
+  if (isError) {
+    return (
+      <NoCareersMessage>
+        데이터를 불러오는 중 오류가 발생했습니다.
+      </NoCareersMessage>
+    );
   }
 
   return (
