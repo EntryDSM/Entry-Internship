@@ -1,31 +1,12 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { colors } from '@entry/design-token';
 import { writeIcon } from '@entry/ui';
-import { CareerItemProps } from '@entry/types';
 import { CareerItem, TitleBanner } from '../components';
-import { fetchAllPosts } from '../apis';
+import { usePostAllApi } from '../apis';
 
 export const Main = () => {
-  const [careerItems, setCareerItems] = useState<CareerItemProps[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const getCareerItems = async () => {
-      try {
-        setIsLoading(true);
-        const data = await fetchAllPosts();
-        setCareerItems(data);
-      } catch (err) {
-        console.error('전체 공고 불러오기 싶패', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    getCareerItems();
-  }, []);
+  const { data: careerItems = [], isLoading } = usePostAllApi();
 
   if (isLoading) {
     return <LoadingMessage>로딩 중...</LoadingMessage>;

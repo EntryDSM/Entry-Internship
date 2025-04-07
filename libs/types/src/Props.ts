@@ -1,12 +1,16 @@
-// 공고 상세 조회
+// 공고 전체 조회
 export interface CareerItemProps {
   noticeId: number;
   title: string;
   keyWord: string[];
-  titleImageUrl: string;
-  description: DescriptionItem[];
   isFocusRecruit: boolean;
   isImportant: boolean;
+}
+
+// 공고 상세 조회
+export interface CareerItemDetailProps extends CareerItemProps {
+  titleImageUrl: string;
+  description: DescriptionItem[];
 }
 
 // 지원 조건
@@ -21,7 +25,6 @@ export interface ReportInfo {
   applicationName: string;
   studentId: string;
 }
-
 
 // 지원서 상세 조회
 export interface ReportDetailInfo {
