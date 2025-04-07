@@ -3,16 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { Button, profilIcon } from '@entry/ui';
 import { ReportInfo } from '@entry/types';
 
-type ApplicantProps = Pick<
-  ReportInfo,
-  'reportId' | 'applicationName' | 'major' | 'programmingExperience'
->;
-
 export const ApplicantList = ({
   reportId,
   applicationName,
-  major,
-}: ApplicantProps) => {
+  studentId,
+}: ReportInfo) => {
   const navigate = useNavigate();
 
   return (
@@ -21,7 +16,7 @@ export const ApplicantList = ({
         <ProfilImg src={profilIcon} />
         <UserInformation>
           <UserNameContainer>{applicationName}</UserNameContainer>
-          <UserJobContainer>{major}</UserJobContainer>
+          <UserJobContainer>{studentId}</UserJobContainer>
         </UserInformation>
       </ProfilContainer>
       <CheckButtonWrapper>

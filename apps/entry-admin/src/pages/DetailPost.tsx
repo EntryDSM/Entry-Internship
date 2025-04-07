@@ -1,40 +1,22 @@
-import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { colors } from '@entry/design-token';
 import { Button } from '@entry/ui';
-import { CareerItemProps } from '@entry/types';
 import { TitleBanner, ApplyCond } from '../components';
-import { fetchPostDetails } from '../apis';
+import { usePostDetailApi } from '../apis';
 
 export const DetailPost = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [careerData, setCareerData] = useState<CareerItemProps | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const noticeId = id ? Number(id) : 0;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (!id) return;
-        const noticeId = Number(id);
-        const postDetails = await fetchPostDetails(noticeId);
-        setCareerData(postDetails);
-      } catch (error) {
-        console.error('공고 상세 조회 중 오류 발생:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data: careerData, isLoading, isError } = usePostDetailApi(noticeId);
 
-    fetchData();
-  }, [id]);
-
-  if (loading) {
+  if (isLoading) {
     return <LoadingMessage>공고 정보를 불러오는 중입니다...</LoadingMessage>;
   }
 
-  if (!careerData) {
+  if (isError || !careerData) {
     return <ErrorMessage>공고 정보를 불러올 수 없습니다.</ErrorMessage>;
   }
 

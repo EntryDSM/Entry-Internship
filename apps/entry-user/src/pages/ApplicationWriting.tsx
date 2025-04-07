@@ -1,16 +1,18 @@
 import { Title, CheckContents } from '../components';
 import styled from '@emotion/styled';
 import { Inputs, TextAreas, Radios, SubBtn } from '@entry/ui';
-import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { applicationWritingApi } from '../apis';
+import { useParams } from 'react-router-dom';
 
 export const ApplicationWriting = () => {
+  const { id } = useParams();
+  const noticeId = id ? parseInt(id) : null;
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const navigate = useNavigate();
   const [isCheck, setIsCheck] = useState<boolean>(false);
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -38,10 +40,8 @@ export const ApplicationWriting = () => {
     }));
   };
 
-  const noticeId = crypto.randomUUID();
-
   const [datas, setdatas] = useState<{
-    noticeId: number | string;
+    noticeId: number;
     inputDatas: [
       { label: string; value: string },
       { label: string; value: string; datas: [{ label: string }] },
@@ -141,18 +141,20 @@ export const ApplicationWriting = () => {
   const apiSubmit = applicationWritingApi();
 
   const submitClick = () => {
-    console.log('api 클릭');
-    apiSubmit.mutate({
-      noticeId: datas.noticeId,
-      applicationName: datas.inputDatas[0].value,
+    const payload = {
+      noticeId: noticeId,
+      applicantName: datas.inputDatas[0].value,
       studentId: datas.inputDatas[1].value,
       phoneNumber: datas.inputDatas[2].value,
       programmingExperience: datas.radioDatas[0].value,
       major: datas.radioDatas[1].value,
       motivation: datas.areaDatas[0].value,
       selfIntroduction: datas.areaDatas[1].value,
-    });
-    console.log('api 보냄');
+    };
+
+    console.log('🔥 최종 제출 데이터:', payload);
+
+    apiSubmit.mutate(payload);
   };
 
   console.log(datas);

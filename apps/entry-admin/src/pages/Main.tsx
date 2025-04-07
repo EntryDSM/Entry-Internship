@@ -2,29 +2,22 @@ import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { colors } from '@entry/design-token';
 import { writeIcon } from '@entry/ui';
-import { CareerItemProps } from '@entry/types';
 import { CareerItem, TitleBanner } from '../components';
-import { fetchAllPosts } from '../apis';
-import { useQuery } from '@tanstack/react-query';
+import { usePostAllApi } from '../apis';
 
 export const Main = () => {
-  const {
-    data: careerItems = [],
-    isLoading,
-    error,
-  } = useQuery<CareerItemProps[]>({
-    queryKey: ['careerItems'],
-    queryFn: fetchAllPosts,
-    retry: false,
-    gcTime: 0,
-  });
-
-  if (error) {
-    return <div>공고를 불러오는 중 오류가 발생했습니다: {error.message}</div>;
-  }
+  const { data: careerItems = [], isLoading, isError } = usePostAllApi();
 
   if (isLoading) {
     return <LoadingMessage>로딩 중...</LoadingMessage>;
+  }
+
+  if (isError) {
+    return (
+      <NoCareersMessage>
+        데이터를 불러오는 중 오류가 발생했습니다.
+      </NoCareersMessage>
+    );
   }
 
   return (

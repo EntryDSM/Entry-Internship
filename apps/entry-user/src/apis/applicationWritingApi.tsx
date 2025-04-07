@@ -4,8 +4,8 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 
 interface ApplicationWriting {
-  noticeId: string | number;
-  applicationName: string;
+  noticeId: number;
+  applicantName: string;
   studentId: string;
   phoneNumber: string;
   programmingExperience: string;
@@ -23,14 +23,17 @@ export const applicationWritingApi = () => {
       await instance.post('/reports', applicationData, {
         headers: {
           Authorization: `Bearer ${cookies.accessToken}`,
+          'Content-Type': 'application/json',
         },
       }),
     onSuccess: () => {
-      navigate('/post/:id');
+      navigate(-1);
       console.log('success');
     },
-    onError: () => {
+    onError: (error) => {
       alert('제출이 되지 않았습니다.');
+      console.log(error);
+      console.log(error.response.data);
     },
   });
 };

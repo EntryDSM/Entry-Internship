@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query';
 import { instance } from './instance';
 import { useCookies } from 'react-cookie';
 
-const fetchpostDetailApi = async (token: string, postId: number) => {
-  const { data } = await instance.get(`/notice/${postId}`, {
+const fetchpostDetailApi = async (token: string, noticeId: number) => {
+  const { data } = await instance.get(`/notices/${noticeId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -11,12 +11,13 @@ const fetchpostDetailApi = async (token: string, postId: number) => {
   return data;
 };
 
-export const postDetailApi = () => {
+export const postDetailApi = (noticeId: number) => {
   const [cookies] = useCookies(['accessToken']);
 
   return useQuery({
-    queryKey: ['postDetail'],
-    queryFn: fetchpostDetailApi(cookies.accessToken),
+    queryKey: ['postDetail', noticeId],
+    queryFn: () => fetchpostDetailApi(cookies.accessToken, noticeId),
+    enabled: !!noticeId,
     onSuccess: (data) => {
       console.log('✅ 데이터 불러오기 성공:', data);
     },

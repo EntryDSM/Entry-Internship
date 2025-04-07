@@ -1,12 +1,16 @@
-// 공고 상세 조회
+// 공고 전체 조회
 export interface CareerItemProps {
   noticeId: number;
   title: string;
   keyWord: string[];
-  titleImageUrl: string;
-  description: DescriptionItem[];
   isFocusRecruit: boolean;
   isImportant: boolean;
+}
+
+// 공고 상세 조회
+export interface CareerItemDetailProps extends CareerItemProps {
+  titleImageUrl: string;
+  description: DescriptionItem[];
 }
 
 // 지원 조건
@@ -20,9 +24,16 @@ export interface ReportInfo {
   reportId: number;
   applicationName: string;
   studentId: string;
-  phoneNumber: string;
+}
+
+// 지원서 상세 조회
+export interface ReportDetailInfo {
+  reportId: number;
+  applicationName: string; // 이름
+  studentId: string;
+  phoneNumber: string; // "01041374208"
   programmingExperience: string; // VERY_GOOD, GOOD, AVERAGE, POOR, VERY_POOR
   major: string; // FRONTEND, DEVOPS, BACKEND, DESIGN
-  motivation: string;
+  motivation: string; // 지원동기
   selfIntroduction: string;
 }
