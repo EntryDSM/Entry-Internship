@@ -1,11 +1,16 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { AppLayout } from './components/layout';
-import { adminRoutes } from './routes';
+import { getAdminRoutes } from './routes';
 
 export const Router = createBrowserRouter([
   {
     path: '/',
     element: <AppLayout />,
-    children: adminRoutes,
+    children: [],
+  },
+  {
+    path: '/admin',
+    element: <AppLayout />,
+    children: getAdminRoutes(),
   },
 ]);

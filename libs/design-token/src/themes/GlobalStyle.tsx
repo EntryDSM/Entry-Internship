@@ -3,8 +3,9 @@ import { Global, css } from '@emotion/react';
 const style = css`
   @font-face {
     font-family: 'Pretendard-Regular';
-    src: url('/fonts/Pretendard-Regular.ttf') format('truetype');
-    font-weight: normal;
+    src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff')
+      format('woff');
+    font-weight: 400;
     font-style: normal;
   }
 
@@ -16,7 +17,10 @@ const style = css`
     outline: unset;
     list-style: none;
     font-style: normal;
-    font-family: 'Pretendard-Regular', sans-serif;
+    font-family: 'Pretendard-Regular', -apple-system, BlinkMacSystemFont,
+      system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo',
+      'Noto Sans KR', 'Malgun Gothic', 'Apple Color Emoji', 'Segoe UI Emoji',
+      'Segoe UI Symbol', sans-serif;
     text-decoration: none;
 
     -webkit-user-select: none;
@@ -32,6 +36,9 @@ const style = css`
   button {
     outline: none;
     border: none;
+    cursor: pointer;
+    background-color: transparent;
+
     &:active {
       outline: none;
       border: none;
