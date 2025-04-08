@@ -1,4 +1,5 @@
 import * as ReactDOM from 'react-dom/client';
+import React from 'react';
 import App from './App';
 import { CookiesProvider } from 'react-cookie';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
@@ -10,9 +11,12 @@ const root = ReactDOM.createRoot(
 const queryClient = new QueryClient();
 
 root.render(
-  <CookiesProvider>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </CookiesProvider>
+  // <CookiesProvider>
+  //   <QueryClientProvider client={queryClient}>
+  //     <App />
+  //   </QueryClientProvider>
+  // </CookiesProvider>
+  <React.Fragment>
+    hello world
+  </React.Fragment>
 );
