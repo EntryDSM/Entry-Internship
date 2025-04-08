@@ -9,10 +9,6 @@ import {
   ApplicantDashboard,
   EditSupport,
 } from './pages';
-<<<<<<< HEAD
-import OAuthHandler from './components/OAuthHandler';
-=======
->>>>>>> origin/fix/깃허브api
 
 export const Router = createBrowserRouter([
   {
@@ -29,13 +25,6 @@ export const Router = createBrowserRouter([
       { path: 'admin/edit-support/:noticeId', element: <EditSupport /> },
       { path: '*', element: <div>404!</div> },
     ],
-<<<<<<< HEAD
-  },
-  {
-    path: '/auth/token',
-    element: <OAuthHandler />,
-=======
->>>>>>> origin/fix/깃허브api
   },
 ]);
 
