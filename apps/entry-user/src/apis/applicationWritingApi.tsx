@@ -28,12 +28,11 @@ export const applicationWritingApi = () => {
       }),
     onSuccess: () => {
       navigate(-1);
-      console.log('success');
+      alert('제출이 완료 되었습니다.');
     },
     onError: (error) => {
       alert('제출이 되지 않았습니다.');
       console.log(error);
-      console.log(error.response.data);
     },
   });
 };
