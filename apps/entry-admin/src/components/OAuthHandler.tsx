@@ -14,7 +14,6 @@ const OAuthHandler = () => {
       const accessExpDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
       const refreshExpDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
 
-      // 쿠키에 저장
       document.cookie = `accessToken=${accessToken}; path=/; expires=${accessExpDate.toUTCString()}`;
       document.cookie = `refreshToken=${refreshToken}; path=/; expires=${refreshExpDate.toUTCString()}`;
 

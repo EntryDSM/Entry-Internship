@@ -10,7 +10,11 @@ export const DetailPost = () => {
   const { noticeId } = useParams();
   const noticeIdNumber = noticeId ? Number(noticeId) : 0;
 
-  const { data: careerData, isLoading, isError } = useNoticeDetailQuery(noticeIdNumber);
+  const {
+    data: careerData,
+    isLoading,
+    isError,
+  } = useNoticeDetailQuery(noticeIdNumber);
 
   if (isLoading) {
     return <LoadingMessage>공고 정보를 불러오는 중입니다...</LoadingMessage>;
@@ -32,16 +36,22 @@ export const DetailPost = () => {
             {careerData.focusRecruit && <Focus>집중채용</Focus>}
             {careerData.important && <Important>중요</Important>}
             <FixToolsContainer>
-              <Delete onClick={() => {
-                if (noticeIdNumber) {
-                  navigate(`/admin/delete-notice/${noticeIdNumber}`);
-                }
-              }}>삭제</Delete>
-              <Edit onClick={() => {
-                if (noticeIdNumber) {
-                  navigate(`/admin/edit-support/${noticeIdNumber}`);
-                }
-              }}>
+              <Delete
+                onClick={() => {
+                  if (noticeIdNumber) {
+                    navigate(`/admin/delete-notice/${noticeIdNumber}`);
+                  }
+                }}
+              >
+                삭제
+              </Delete>
+              <Edit
+                onClick={() => {
+                  if (noticeIdNumber) {
+                    navigate(`/admin/edit-support/${noticeIdNumber}`);
+                  }
+                }}
+              >
                 수정
               </Edit>
             </FixToolsContainer>
@@ -68,6 +78,7 @@ export const DetailPost = () => {
           <TitleImg src={careerData.titleImageUrl} alt="공고 이미지" />
           <ButtonWrapper>
             <Button
+              isAdmin={true}
               children="지원자 보기"
               onClick={() => navigate(`/admin/support/${noticeIdNumber}`)}
             />
