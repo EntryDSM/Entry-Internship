@@ -11,12 +11,9 @@ const root = ReactDOM.createRoot(
 const queryClient = new QueryClient();
 
 root.render(
-  // <CookiesProvider>
-  //   <QueryClientProvider client={queryClient}>
-  //     <App />
-  //   </QueryClientProvider>
-  // </CookiesProvider>
-  <React.Fragment>
-    hello world
-  </React.Fragment>
+  <CookiesProvider>
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  </CookiesProvider>
 );
