@@ -10,15 +10,7 @@ export const DetailPost = () => {
   const { noticeId } = useParams();
   const noticeIdNumber = noticeId ? Number(noticeId) : 0;
 
-<<<<<<< HEAD
-  const {
-    data: careerData,
-    isLoading,
-    isError,
-  } = useNoticeDetailQuery(noticeIdNumber);
-=======
   const { data: careerData, isLoading, isError } = useNoticeDetailQuery(noticeIdNumber);
->>>>>>> origin/fix/깃허브api
 
   if (isLoading) {
     return <LoadingMessage>공고 정보를 불러오는 중입니다...</LoadingMessage>;
@@ -40,7 +32,6 @@ export const DetailPost = () => {
             {careerData.focusRecruit && <Focus>집중채용</Focus>}
             {careerData.important && <Important>중요</Important>}
             <FixToolsContainer>
-<<<<<<< HEAD
               <Delete
                 onClick={() => {
                   if (noticeIdNumber) {
@@ -57,18 +48,6 @@ export const DetailPost = () => {
                   }
                 }}
               >
-=======
-              <Delete onClick={() => {
-                if (noticeIdNumber) {
-                  navigate(`/admin/delete-notice/${noticeIdNumber}`);
-                }
-              }}>삭제</Delete>
-              <Edit onClick={() => {
-                if (noticeIdNumber) {
-                  navigate(`/admin/edit-support/${noticeIdNumber}`);
-                }
-              }}>
->>>>>>> origin/fix/깃허브api
                 수정
               </Edit>
             </FixToolsContainer>
