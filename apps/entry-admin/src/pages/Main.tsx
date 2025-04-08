@@ -3,22 +3,52 @@ import styled from '@emotion/styled';
 import { colors } from '@entry/design-token';
 import { writeIcon } from '@entry/ui';
 import { CareerItem, TitleBanner } from '../components';
-import { usePostAllApi } from '../apis';
+import { useNoticesQuery } from '../apis';
+import { useEffect, useState } from 'react';
 
 export const Main = () => {
-  const { data: careerItems = [], isLoading, isError } = usePostAllApi();
+  const navigate = useNavigate();
+  const { data, isLoading, isError } = useNoticesQuery();
+  const [notices, setNotices] = useState([]);
 
-  console.log(isLoading);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
+    if (Array.isArray(data)) {
+      setNotices(data);
+    } else if (data && Array.isArray(data.content)) {
+      setNotices(data.content);
+    } else {
+      console.log('데이터 형식이 예상과 다릅니다:', data);
+      setNotices([]);
+    }
+  }, [data]);
 
   if (isLoading) {
-    return <LoadingMessage>로딩 중...</LoadingMessage>;
+    return (
+      <MainContainer>
+        <TitleBanner />
+        <CarrersContainer>
+          <CarrerTitle>채용 공고</CarrerTitle>
+          <LoadingMessage>데이터를 불러오는 중입니다...</LoadingMessage>
+        </CarrersContainer>
+      </MainContainer>
+    );
   }
 
   if (isError) {
     return (
-      <NoCareersMessage>
-        데이터를 불러오는 중 오류가 발생했습니다.
-      </NoCareersMessage>
+      <MainContainer>
+        <TitleBanner />
+        <CarrersContainer>
+          <CarrerTitle>채용 공고</CarrerTitle>
+          <NoCareersMessage>
+            데이터를 불러오는 중 오류가 발생했습니다.
+          </NoCareersMessage>
+        </CarrersContainer>
+      </MainContainer>
     );
   }
 
@@ -27,19 +57,19 @@ export const Main = () => {
       <TitleBanner />
       <CarrersContainer>
         <CarrerTitle>채용 공고</CarrerTitle>
-        {careerItems.length > 0 ? (
-          careerItems.map((item) => (
+        {notices.length > 0 ? (
+          notices.map((notice) => (
             <CareerItem
-              key={item.noticeId}
-              noticeId={item.noticeId}
-              title={item.title}
-              isFocusRecruit={item.isFocusRecruit}
-              isImportant={item.isImportant}
-              keyWord={item.keyWord}
+              key={notice.noticeId}
+              noticeId={notice.noticeId}
+              title={notice.title}
+              isFocusRecruit={notice.focusRecruit}
+              isImportant={notice.important}
+              keyWord={notice.keyWord}
             />
           ))
         ) : (
-          <NoCareersMessage>현재 공고가 없습니다.</NoCareersMessage>
+          <div>채용 공고가 없습니다.</div>
         )}
       </CarrersContainer>
       <WriteButton />
@@ -51,7 +81,7 @@ const WriteButton = () => {
   const navigate = useNavigate();
 
   return (
-    <WriteButtonField onClick={() => navigate('/create-support')}>
+    <WriteButtonField onClick={() => navigate('/admin/create-support')}>
       <img src={writeIcon} alt="✏️" />글 작성하기
     </WriteButtonField>
   );

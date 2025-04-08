@@ -6,9 +6,16 @@ export const ApplicantDashboard = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const reportId = id ? parseInt(id, 10) : null;
+  
+  console.log('파라미터 id:', id);
+  console.log('변환된 reportId:', reportId);
 
   const { data: users, isLoading, isError } = useApplicantDetailsApi(reportId);
 
+  console.log('로딩 상태:', isLoading);
+  console.log('에러 상태:', isError);
+  console.log('유저 데이터:', users);
+  
   if (isLoading) {
     return <LoadingMessage>로딩 중...</LoadingMessage>;
   }
@@ -17,20 +24,23 @@ export const ApplicantDashboard = () => {
     return <ErrorMessage>지원자 정보를 불러올 수 없습니다.</ErrorMessage>;
   }
 
+  // 이름 필드가 applicantName 또는 applicationName 중 어떤 것이 있는지 확인
+  const nameField = users.applicantName || users.applicationName || '이름 없음';
+  
   return (
     <ApplicantDashboardAll>
       <ExitButton onClick={() => navigate(-1)}>나가기</ExitButton>
       <Dashboard>
         <HeaderPartContainer>
-          <UserName>{users.applicationName}</UserName>
-          <ClassNumber>{users.studentId}</ClassNumber>
+          <UserName>{nameField}</UserName>
+          <ClassNumber>{users.studentId || '학번 없음'}</ClassNumber>
           <UserInformation>
-            <AbilityAll>{users.programmingExperience}</AbilityAll>
-            <UserJob>{users.major}</UserJob>
+            <AbilityAll>{users.programmingExperience || '등급 없음'}</AbilityAll>
+            <UserJob>{users.major || '전공 없음'}</UserJob>
           </UserInformation>
         </HeaderPartContainer>
-        <MotivationContainer>{users.motivation}</MotivationContainer>
-        <IntroduceContainer>{users.selfIntroduction}</IntroduceContainer>
+        <MotivationContainer>{users.motivation || '지원동기 정보가 없습니다.'}</MotivationContainer>
+        <IntroduceContainer>{users.selfIntroduction || '자기소개 정보가 없습니다.'}</IntroduceContainer>
       </Dashboard>
     </ApplicantDashboardAll>
   );

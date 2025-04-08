@@ -4,7 +4,6 @@ import { EntryLogo } from './assets';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { SideBarBtnIcon } from './assets/icons/SideBarBtnIcon';
 import { useEffect, useState } from 'react';
-import { logoutApi } from '../../../apps/entry-user/src/apis/logoutApi';
 import { useCookies } from 'react-cookie';
 
 interface IHeaderType {
@@ -31,10 +30,12 @@ const Nav = ({ children, isPath, isAdmin, onClick }: INavType) => {
 
 export const AdminHeader = () => {
   const navigate = useNavigate();
+  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+
   const navData = [
     {
       name: '채용 확인',
-      path: '/job-status',
+      path: '/admin/job-status',
     },
   ];
 
@@ -42,6 +43,11 @@ export const AdminHeader = () => {
 
   const navClick = (path: string) => {
     navigate(path);
+  };
+
+  const logoutClick = () => {
+    removeCookie('accessToken');
+    navigate('/');
   };
 
   return (
@@ -69,6 +75,7 @@ export const AdminHeader = () => {
           color={colors.gray[50]}
           backgroundColor={colors.green[500]}
           backgroundHoverColor={colors.green[700]}
+          onClick={logoutClick}
         >
           로그아웃
         </Button>
@@ -79,14 +86,15 @@ export const AdminHeader = () => {
 
 export const CommonHeader = ({ isAdmin }: IHeaderType) => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
-    if (accessToken === '') setIsLogin(false);
+    const accessToken = cookies.accessToken;
+    if (!accessToken) setIsLogin(false);
     else setIsLogin(true);
-  }, []);
+  }, [cookies.accessToken]);
 
-  const navigate = useNavigate();
   const navData = [
     {
       name: '지원하기',
@@ -110,18 +118,10 @@ export const CommonHeader = ({ isAdmin }: IHeaderType) => {
     navigate('/login-user');
   };
 
-  const [cookies] = useCookies(['accessToken']);
-  const apiLogout = logoutApi();
   const logoutClick = () => {
-    console.log('logout');
-    apiLogout.mutate();
+    removeCookie('accessToken');
+    navigate('/');
   };
-
-  useEffect(() => {
-    const accessToken = cookies.accessToken; //쿠키의 토큰 확인
-    if (!accessToken) setIsLogin(false);
-    else setIsLogin(true);
-  }, [cookies.accessToken]);
 
   return (
     <HeaderContainer>
