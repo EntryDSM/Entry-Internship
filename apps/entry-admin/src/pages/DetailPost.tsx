@@ -3,14 +3,14 @@ import styled from '@emotion/styled';
 import { colors } from '@entry/design-token';
 import { Button } from '@entry/ui';
 import { TitleBanner, ApplyCond } from '../components';
-import { usePostDetailApi } from '../apis';
+import { useNoticeDetailQuery } from '../apis';
 
 export const DetailPost = () => {
   const navigate = useNavigate();
-  const { id } = useParams();
-  const noticeId = id ? Number(id) : 0;
+  const { noticeId } = useParams();
+  const noticeIdNumber = noticeId ? Number(noticeId) : 0;
 
-  const { data: careerData, isLoading, isError } = usePostDetailApi(noticeId);
+  const { data: careerData, isLoading, isError } = useNoticeDetailQuery(noticeIdNumber);
 
   if (isLoading) {
     return <LoadingMessage>공고 정보를 불러오는 중입니다...</LoadingMessage>;
@@ -29,11 +29,19 @@ export const DetailPost = () => {
         <PostTitleContainer>
           <ListItemContent>{careerData.title}</ListItemContent>
           <ImportantList>
-            {careerData.isFocusRecruit && <Focus>집중채용</Focus>}
-            {careerData.isImportant && <Important>중요</Important>}
+            {careerData.focusRecruit && <Focus>집중채용</Focus>}
+            {careerData.important && <Important>중요</Important>}
             <FixToolsContainer>
-              <Delete>삭제</Delete>
-              <Edit onClick={() => navigate(`/edit-support/${Number(id)}`)}>
+              <Delete onClick={() => {
+                if (noticeIdNumber) {
+                  navigate(`/admin/delete-notice/${noticeIdNumber}`);
+                }
+              }}>삭제</Delete>
+              <Edit onClick={() => {
+                if (noticeIdNumber) {
+                  navigate(`/admin/edit-support/${noticeIdNumber}`);
+                }
+              }}>
                 수정
               </Edit>
             </FixToolsContainer>
@@ -61,7 +69,7 @@ export const DetailPost = () => {
           <ButtonWrapper>
             <Button
               children="지원자 보기"
-              onClick={() => navigate(`/job-status/${id}`)}
+              onClick={() => navigate(`/admin/support/${noticeIdNumber}`)}
             />
           </ButtonWrapper>
         </RightContainer>

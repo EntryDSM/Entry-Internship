@@ -6,11 +6,11 @@ export const AdminLogin = () => {
   const navigate = useNavigate();
 
   const handleGithubLogin = () => {
-    window.open(
-      `${import.meta.env.VITE_BASE_URL}/api/github/auth/authentication`,
-      '_blank'
-    );
+    window.location.href = `${
+      import.meta.env.VITE_BASE_URL
+    }/api/github/auth/authentication`;
   };
+
   return (
     <LoginContainer>
       <LoginCard>

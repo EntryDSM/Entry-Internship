@@ -2,41 +2,64 @@ import { CheckContents, Title, KeyWord } from '../components';
 import { Inputs, Label, Button, InputTextArea, SubBtn } from '@entry/ui';
 import { useRef, useState, useEffect } from 'react';
 import styled from '@emotion/styled';
+import { useNavigate } from 'react-router-dom';
+import { useCreateNoticeMutation } from '../apis';
 
 export const CreateSupport = () => {
+  const navigate = useNavigate();
+  const createNoticeMutation = useCreateNoticeMutation();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [keywordValue, setKeywordValue] = useState<string>('');
-  const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [isFocusRecruit, setIsFocusRecruit] = useState<boolean>(false);
   const [isImportant, setIsImportant] = useState<boolean>(false);
-  const noticeId = crypto.randomUUID();
-  const [datas, setDatas] = useState<{
-    noticeId: string;
-    title: string;
-    keyword: string[];
-    imgUrl: string;
-    areaInput: { valueInput: string; valueArea: string }[];
-    checkbox: { focused: boolean; important: boolean };
-  }>({
-    noticeId: noticeId,
-    title: '',
-    keyword: [],
-    imgUrl: '',
-    areaInput: [
-      {
-        valueInput: '',
-        valueArea: '',
-      },
-    ],
-    checkbox: { focused: isFocused, important: isImportant },
-  });
+  const [titleImageUrl, setTitleImageUrl] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [keyWords, setKeyWords] = useState<string[]>([]);
+  const [descriptions, setDescriptions] = useState<{ title: string; content: string }[]>([
+    { title: '', content: '' }
+  ]);
 
-  const completedClick = () => {
-    console.log('작성 완료 데이터:', datas);
+  const handleSubmit = () => {
+    // 필수 필드 검증
+    if (!title) {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+    
+    if (keyWords.length < 1) {
+      alert('키워드를 최소 1개 이상 입력해주세요.');
+      return;
+    }
+    
+    if (!titleImageUrl) {
+      alert('타이틀 이미지를 업로드해주세요.');
+      return;
+    }
+
+    // API에 필요한 형태로 데이터 구성
+    const noticeData = {
+      title,
+      keyWord: keyWords,
+      titleImageUrl,
+      description: descriptions.filter(desc => desc.title.trim() !== '' && desc.content.trim() !== ''),
+      focusRecruit: isFocusRecruit,
+      important: isImportant
+    };
+
+    console.log('제출할 데이터:', noticeData);
+
+    // API 호출
+    createNoticeMutation.mutate(noticeData, {
+      onSuccess: () => {
+        alert('공고가 성공적으로 등록되었습니다.');
+        navigate('/admin/job-status');
+      }
+    });
   };
 
   const imgBtnClick = () => {
     if (fileRef.current) {
-      fileRef.current.showPicker();
+      fileRef.current.click();
     }
   };
 
@@ -44,83 +67,64 @@ export const CreateSupport = () => {
     const files = fileRef.current?.files;
     if (files && files.length > 0) {
       const url = URL.createObjectURL(files[0]);
+      setTitleImageUrl(url);
       console.log('Selected file URL:', url);
+
+      // 실제 API 연동 시에는 파일 업로드 로직이 필요합니다.
+      // 이 예제에서는 로컬 URL을 사용합니다.
     }
   };
 
-  const areaInputAddClick = () => {
-    setDatas((prev) => ({
-      ...prev,
-      areaInput: [...prev.areaInput, { valueInput: '', valueArea: '' }],
-    }));
+  const addDescription = () => {
+    setDescriptions(prev => [...prev, { title: '', content: '' }]);
   };
 
   const handleInputChange = (index: number, value: string) => {
-    setDatas((prev) => {
-      const updatedAreaInput = [...prev.areaInput];
-      updatedAreaInput[index] = {
-        ...updatedAreaInput[index],
-        valueInput: value,
-      };
-      return {
-        ...prev,
-        areaInput: updatedAreaInput,
-      };
+    setDescriptions(prev => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], title: value };
+      return updated;
     });
   };
 
   const handleTextAreaChange = (index: number, value: string) => {
-    setDatas((prev) => {
-      const updatedAreaInput = [...prev.areaInput];
-      updatedAreaInput[index] = {
-        ...updatedAreaInput[index],
-        valueArea: value,
-      };
-      return {
-        ...prev,
-        areaInput: updatedAreaInput,
-      };
+    setDescriptions(prev => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], content: value };
+      return updated;
     });
   };
 
-  const handleAreaInputDelete = (index: number) => {
-    setDatas((prev) => {
-      const updatedAreaInput = [...prev.areaInput];
-      updatedAreaInput.splice(index, 1);
-      return {
-        ...prev,
-        areaInput: updatedAreaInput,
-      };
-    });
-  };
-
-  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-
-    setDatas((prev) => ({
-      ...prev,
-      title: value,
-    }));
-  };
-
-  const enterKeyWord = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && keywordValue) {
-      console.log('입력된 키워드:', keywordValue);
-      const value = keywordValue;
-      setDatas((prev) => ({
-        ...prev,
-        keyword: [...prev.keyword, value],
-      }));
-      setKeywordValue('');
+  const handleDescriptionDelete = (index: number) => {
+    if (descriptions.length > 1) {
+      setDescriptions(prev => {
+        const updated = [...prev];
+        updated.splice(index, 1);
+        return updated;
+      });
+    } else {
+      alert('최소 1개의 설명이 필요합니다.');
     }
   };
 
-  useEffect(() => {
-    setDatas((prev) => ({
-      ...prev,
-      checkbox: { focused: isFocused, important: isImportant },
-    }));
-  }, [isFocused, isImportant]);
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const enterKeyWord = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && keywordValue.trim()) {
+      if (!keyWords.includes(keywordValue.trim())) {
+        setKeyWords(prev => [...prev, keywordValue.trim()]);
+        setKeywordValue('');
+      } else {
+        alert('이미 추가된 키워드입니다.');
+      }
+    }
+  };
+
+  const removeKeyword = (keywordToRemove: string) => {
+    setKeyWords(prev => prev.filter(keyword => keyword !== keywordToRemove));
+  };
 
   return (
     <CreateSupportContainer>
@@ -132,7 +136,7 @@ export const CreateSupport = () => {
         <InputContainer>
           <Inputs
             label="제목"
-            value={datas.title}
+            value={title}
             onChange={handleTitleChange}
           />
           <Inputs
@@ -140,48 +144,61 @@ export const CreateSupport = () => {
             onKeyUp={enterKeyWord}
             value={keywordValue}
             onChange={(e) => setKeywordValue(e.target.value)}
+            placeholder="엔터 키를 눌러 키워드를 추가하세요"
           />
           <KeyWordContainer>
-            {datas.keyword.map((item, index) => (
-              <KeyWord key={index}>{item}</KeyWord>
+            {keyWords.map((keyword, index) => (
+              <KeywordItem key={index} onClick={() => removeKeyword(keyword)}>
+                <KeyWord>{keyword}</KeyWord>
+              </KeywordItem>
             ))}
           </KeyWordContainer>
           <ImgAllContainer>
             <Label label="타이틀 사진" />
             <ImgContainer>
               <ImgBtnContainer>
-                <Button isAdmin={true} onClick={imgBtnClick} />
+                <Button isAdmin={true} onClick={imgBtnClick}>
+                  이미지 업로드
+                </Button>
               </ImgBtnContainer>
-              {datas.imgUrl && <KeyWord>{datas.imgUrl}</KeyWord>}
+              {titleImageUrl && (
+                <ImagePreviewContainer>
+                  <ImagePreview src={titleImageUrl} alt="미리보기" />
+                </ImagePreviewContainer>
+              )}
             </ImgContainer>
-            <FakeInput type="file" ref={fileRef} onChange={handleImgChange} />
+            <FakeInput type="file" ref={fileRef} onChange={handleImgChange} accept="image/*" />
           </ImgAllContainer>
           <>
-            {datas.areaInput.map((item, index) => (
+            {descriptions.map((item, index) => (
               <InputTextAreaContainer key={index}>
                 <InputTextArea
                   label={`설명(${index + 1})`}
                   inputChange={(e) => handleInputChange(index, e.target.value)}
-                  areaChange={(e) =>
-                    handleTextAreaChange(index, e.target.value)
-                  }
-                  valueInput={item.valueInput}
-                  valueArea={item.valueArea}
+                  areaChange={(e) => handleTextAreaChange(index, e.target.value)}
+                  valueInput={item.title}
+                  valueArea={item.content}
                 />
-                <DeleteButton onClick={() => handleAreaInputDelete(index)}>
-                  삭제
-                </DeleteButton>
+                {descriptions.length > 1 && (
+                  <DeleteButton onClick={() => handleDescriptionDelete(index)}>
+                    삭제
+                  </DeleteButton>
+                )}
               </InputTextAreaContainer>
             ))}
-            <Button isAdmin={true} onClick={areaInputAddClick} />
+            <AddButtonContainer>
+              <Button isAdmin={true} onClick={addDescription}>
+                설명 추가하기
+              </Button>
+            </AddButtonContainer>
           </>
         </InputContainer>
         <CheckContainer>
           <CheckBoxContainer>
             <CheckContents
               label="집중채용"
-              setIsCheck={setIsFocused}
-              isCheck={isFocused}
+              setIsCheck={setIsFocusRecruit}
+              isCheck={isFocusRecruit}
             />
             <CheckContents
               label="중요"
@@ -189,7 +206,7 @@ export const CreateSupport = () => {
               isCheck={isImportant}
             />
           </CheckBoxContainer>
-          <SubBtn userType="admin" onClick={completedClick}>
+          <SubBtn userType="admin" onClick={handleSubmit}>
             작성완료
           </SubBtn>
         </CheckContainer>
@@ -197,6 +214,33 @@ export const CreateSupport = () => {
     </CreateSupportContainer>
   );
 };
+
+const ImagePreviewContainer = styled.div`
+  margin-top: 10px;
+  width: 200px;
+  height: 120px;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+`;
+
+const ImagePreview = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const KeywordItem = styled.div`
+  cursor: pointer;
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+const AddButtonContainer = styled.div`
+  margin-top: 20px;
+  width: 200px;
+`;
 
 const InputTextAreaContainer = styled.div`
   position: relative;
@@ -323,12 +367,11 @@ const FakeInput = styled.input`
 
 const ImgContainer = styled.div`
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 28px;
-  flex-wrap: wrap;
 
   @media (max-width: 768px) {
     gap: 16px;
-    justify-content: center;
+    align-items: center;
   }
 `;

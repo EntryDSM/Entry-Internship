@@ -5,7 +5,7 @@ import { colors } from '@entry/design-token';
 import { kebabIcon } from '@entry/ui';
 import { useModal } from '@entry/hooks';
 import { CareerItemProps } from '@entry/types';
-import { useDeletePostApi } from '../../apis';
+import { useDeleteNoticeMutation } from '../../apis';
 
 type CareerITemType = Pick<
   CareerItemProps,
@@ -22,7 +22,7 @@ export const CareerItem = ({
   const navigate = useNavigate();
   const [showDelete, setShowDelete] = useState<boolean>(false);
   const dropMenuRef = useRef<HTMLDivElement | null>(null);
-  const deletePostMutation = useDeletePostApi();
+  const deleteNoticeMutation = useDeleteNoticeMutation();
 
   const { isOpen: isModalOpen, openModal, closeModal } = useModal();
 
@@ -38,8 +38,16 @@ export const CareerItem = ({
   };
 
   const handleConfirmDelete = async () => {
-    console.log(`공고${noticeId} 삭제 시작`);
-    deletePostMutation.mutate(noticeId, {
+    console.log(`공고 ${noticeId} 삭제 시작`);
+    
+    if (typeof noticeId !== 'number') {
+      console.error('noticeId가 유효하지 않습니다:', noticeId);
+      alert('유효하지 않은 공고 ID입니다.');
+      closeModal();
+      return;
+    }
+    
+    deleteNoticeMutation.mutate(noticeId, {
       onSuccess: () => {
         closeModal();
       },
@@ -67,7 +75,9 @@ export const CareerItem = ({
 
   return (
     <>
-      <CarrerItemContainer onClick={() => navigate(`/job-status/${noticeId}`)}>
+      <CarrerItemContainer
+        onClick={() => navigate(`/admin/job-status/${noticeId}`)}
+      >
         <Top>
           <ListItemContent>{title}</ListItemContent>
           <ImportantList>
@@ -87,7 +97,7 @@ export const CareerItem = ({
         </Top>
         <TagsContainer>
           <TechStack>
-            {keyWord.map((tag, index) => (
+            {keyWord && keyWord.map((tag, index) => (
               <TechTag key={index}>{tag}</TechTag>
             ))}
           </TechStack>

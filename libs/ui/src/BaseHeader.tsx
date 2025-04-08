@@ -34,7 +34,7 @@ export const AdminHeader = () => {
   const navData = [
     {
       name: '채용 확인',
-      path: '/job-status',
+      path: '/admin/job-status',
     },
   ];
 

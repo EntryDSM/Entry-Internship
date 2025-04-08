@@ -1,9 +1,9 @@
 export * from './Main';
-export * from './CreateSupport';
 export * from './DetailPost';
 export * from './ApplicationStatus';
 export * from './JobStatus';
 export * from './ApplicantDashboard';
+export * from './CreateSupport';
 export * from './EditSupport';
-export * from './Edited';
 export * from './Completed';
+export { default as AdminMain } from './AdminMain';

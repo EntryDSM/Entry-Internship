@@ -1,9 +1,9 @@
 import styled from '@emotion/styled';
 import { ApplicantList } from '../components';
-import { useApplicantsApi } from '../apis';
+import { useAllReportsQuery } from '../apis/applicantApi';
 
 export const ApplicationStatus = () => {
-  const { data: applicants = [], isLoading, isError } = useApplicantsApi();
+  const { data: applicants = [], isLoading, isError } = useAllReportsQuery();
 
   if (isLoading) return <div>로딩 중...</div>;
   if (isError) return <div>지원자 정보를 불러올 수 없습니다.</div>;
@@ -16,7 +16,7 @@ export const ApplicationStatus = () => {
             <ApplicantList
               key={info.reportId}
               reportId={info.reportId}
-              applicationName={info.applicationName}
+              applicationName={info.applicantName}
               studentId={info.studentId}
             />
           ))}
