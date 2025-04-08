@@ -106,7 +106,7 @@ export const CommonHeader = ({ isAdmin }: IHeaderType) => {
   return (
     <HeaderContainer>
       <NavAllContainer>
-        <SideBarBtnIcon onClick={sideClick} />
+        {cookies.accessToken && <SideBarBtnIcon onClick={sideClick} />}
         {isSideClick && (
           <SideNavContainer>
             {navData.map((data) => (
