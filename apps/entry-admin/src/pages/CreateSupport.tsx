@@ -15,9 +15,9 @@ export const CreateSupport = () => {
   const [titleImageUrl, setTitleImageUrl] = useState<string>('');
   const [title, setTitle] = useState<string>('');
   const [keyWords, setKeyWords] = useState<string[]>([]);
-  const [descriptions, setDescriptions] = useState<{ title: string; content: string }[]>([
-    { title: '', content: '' }
-  ]);
+  const [descriptions, setDescriptions] = useState<
+    { title: string; content: string }[]
+  >([{ title: '', content: '' }]);
 
   const handleSubmit = () => {
     // 필수 필드 검증
@@ -25,12 +25,12 @@ export const CreateSupport = () => {
       alert('제목을 입력해주세요.');
       return;
     }
-    
+
     if (keyWords.length < 1) {
       alert('키워드를 최소 1개 이상 입력해주세요.');
       return;
     }
-    
+
     if (!titleImageUrl) {
       alert('타이틀 이미지를 업로드해주세요.');
       return;
@@ -41,9 +41,11 @@ export const CreateSupport = () => {
       title,
       keyWord: keyWords,
       titleImageUrl,
-      description: descriptions.filter(desc => desc.title.trim() !== '' && desc.content.trim() !== ''),
+      description: descriptions.filter(
+        (desc) => desc.title.trim() !== '' && desc.content.trim() !== ''
+      ),
       focusRecruit: isFocusRecruit,
-      important: isImportant
+      important: isImportant,
     };
 
     console.log('제출할 데이터:', noticeData);
@@ -53,7 +55,7 @@ export const CreateSupport = () => {
       onSuccess: () => {
         alert('공고가 성공적으로 등록되었습니다.');
         navigate('/admin/job-status');
-      }
+      },
     });
   };
 
@@ -76,11 +78,11 @@ export const CreateSupport = () => {
   };
 
   const addDescription = () => {
-    setDescriptions(prev => [...prev, { title: '', content: '' }]);
+    setDescriptions((prev) => [...prev, { title: '', content: '' }]);
   };
 
   const handleInputChange = (index: number, value: string) => {
-    setDescriptions(prev => {
+    setDescriptions((prev) => {
       const updated = [...prev];
       updated[index] = { ...updated[index], title: value };
       return updated;
@@ -88,7 +90,7 @@ export const CreateSupport = () => {
   };
 
   const handleTextAreaChange = (index: number, value: string) => {
-    setDescriptions(prev => {
+    setDescriptions((prev) => {
       const updated = [...prev];
       updated[index] = { ...updated[index], content: value };
       return updated;
@@ -97,7 +99,7 @@ export const CreateSupport = () => {
 
   const handleDescriptionDelete = (index: number) => {
     if (descriptions.length > 1) {
-      setDescriptions(prev => {
+      setDescriptions((prev) => {
         const updated = [...prev];
         updated.splice(index, 1);
         return updated;
@@ -114,7 +116,7 @@ export const CreateSupport = () => {
   const enterKeyWord = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && keywordValue.trim()) {
       if (!keyWords.includes(keywordValue.trim())) {
-        setKeyWords(prev => [...prev, keywordValue.trim()]);
+        setKeyWords((prev) => [...prev, keywordValue.trim()]);
         setKeywordValue('');
       } else {
         alert('이미 추가된 키워드입니다.');
@@ -123,7 +125,9 @@ export const CreateSupport = () => {
   };
 
   const removeKeyword = (keywordToRemove: string) => {
-    setKeyWords(prev => prev.filter(keyword => keyword !== keywordToRemove));
+    setKeyWords((prev) =>
+      prev.filter((keyword) => keyword !== keywordToRemove)
+    );
   };
 
   return (
@@ -134,11 +138,7 @@ export const CreateSupport = () => {
           subTitle="신청 페이지를 만들 수 있어요"
         />
         <InputContainer>
-          <Inputs
-            label="제목"
-            value={title}
-            onChange={handleTitleChange}
-          />
+          <Inputs label="제목" value={title} onChange={handleTitleChange} />
           <Inputs
             label="키워드"
             onKeyUp={enterKeyWord}
@@ -167,7 +167,12 @@ export const CreateSupport = () => {
                 </ImagePreviewContainer>
               )}
             </ImgContainer>
-            <FakeInput type="file" ref={fileRef} onChange={handleImgChange} accept="image/*" />
+            <FakeInput
+              type="file"
+              ref={fileRef}
+              onChange={handleImgChange}
+              accept="image/*"
+            />
           </ImgAllContainer>
           <>
             {descriptions.map((item, index) => (
@@ -175,7 +180,9 @@ export const CreateSupport = () => {
                 <InputTextArea
                   label={`설명(${index + 1})`}
                   inputChange={(e) => handleInputChange(index, e.target.value)}
-                  areaChange={(e) => handleTextAreaChange(index, e.target.value)}
+                  areaChange={(e) =>
+                    handleTextAreaChange(index, e.target.value)
+                  }
                   valueInput={item.title}
                   valueArea={item.content}
                 />

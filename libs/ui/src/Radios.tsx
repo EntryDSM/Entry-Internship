@@ -3,35 +3,38 @@ import { colors } from '@entry/design-token';
 import { Check } from './assets';
 import { Label } from './Label';
 
-type RadioType = {
-  userType?: 'admin' | 'user';
-  placeholder?: string;
-  label?: string;
-  radioLabel?: string;
-  radioPlaceholder?: string;
-  name?: string;
-  datas?: object[];
-  setAddRadio: React.Dispatch<React.SetStateAction<RadioItemType[]>>;
-  addRadio?: object[];
-  onRadioChange?: () => void;
+type RadioOption = {
+  label: string;
+  name: string;
 };
 
 type RadioItemType = {
+  radioLabel?: string;
+  radioPlaceholder?: string;
+  name?: string;
+  userType?: 'admin' | 'user';
+  onChange?: (value: string) => void;
+  onRadioChange?: (selectedValue: string) => void;
+};
+
+type RadiosProps = {
+  label: string;
+  placeholder?: string;
   userType?: 'admin' | 'user';
   radioPlaceholder?: string;
-  radioLabel?: string;
-  name?: string;
-  onChange?: (e: string) => void;
+  name: string;
+  datas: RadioOption[];
+  onRadioChange?: (selectedValue: string) => void;
 };
 
 const RadioItem = ({
-  radioPlaceholder,
-  userType = 'admin',
   radioLabel,
+  radioPlaceholder,
   name,
+  userType = 'admin',
   onChange,
   onRadioChange,
-}: RadioItemType & { onRadioChange?: (selectedValue: string) => void }) => {
+}: RadioItemType) => {
   return (
     <RadioItemContainer>
       <RadioFakeContainer>
@@ -60,51 +63,27 @@ export const Radios = ({
   userType,
   radioPlaceholder,
   name,
-  setAddRadio,
-  datas = [],
+  datas,
   onRadioChange,
-}: RadioType) => {
-  const addRadioClick = () => {
-    setAddRadio((prevAddRadio) => [
-      ...prevAddRadio,
-      { radioPlaceholder, userType, radioLabel: '', value: '' },
-    ]);
-  };
-
-  const handleRadioClick = (index: number, value: string) => {
-    setAddRadio((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, value } : item))
-    );
-  };
-
-  const handleDataRadioChange = (selectedValue: string) => {
-    onRadioChange?.(selectedValue);
-  };
-
+}: RadiosProps) => {
   return (
     <RadioContainer>
       <Label label={label} placeholder={placeholder} />
       <ContentContainer>
         {datas.map((data) => (
           <RadioItem
+            key={data.name}
             radioPlaceholder={radioPlaceholder}
             userType={userType}
             radioLabel={data.label}
             name={name}
-            onRadioChange={handleDataRadioChange}
+            onRadioChange={onRadioChange}
           />
         ))}
       </ContentContainer>
     </RadioContainer>
   );
 };
-const ContentContainer = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 46px;
-  flex-wrap: wrap;
-  align-items: center;
-`;
 
 const RadioContainer = styled.div`
   width: 100%;
@@ -114,22 +93,12 @@ const RadioContainer = styled.div`
   gap: 30px;
 `;
 
-const Radio = styled.input<Pick<RadioType, 'userType'>>`
-  width: 25px;
-  height: 25px;
-  padding-left: 24px;
-  font-size: 16px;
-  font-weight: 500;
-  border-radius: 50%;
-  appearance: none;
-  box-shadow: 0 0 0 1px ${colors.gray[600]};
-  &:checked {
-    box-shadow: 0 0 0 1.6px
-      ${({ userType }) =>
-        userType === 'admin' ? colors.green[500] : colors.orange[500]};
-    background-color: ${({ userType }) =>
-      userType === 'admin' ? colors.green[500] : colors.orange[500]};
-  }
+const ContentContainer = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 46px;
+  flex-wrap: wrap;
+  align-items: center;
 `;
 
 const RadioItemContainer = styled.div`
@@ -150,4 +119,19 @@ const ImgContainer = styled.div`
   top: 1.2px;
   left: 1.2px;
   pointer-events: none;
+`;
+
+const Radio = styled.input<{ userType?: 'admin' | 'user' }>`
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  appearance: none;
+  box-shadow: 0 0 0 1px ${colors.gray[600]};
+  &:checked {
+    box-shadow: 0 0 0 1.6px
+      ${({ userType }) =>
+        userType === 'admin' ? colors.green[500] : colors.orange[500]};
+    background-color: ${({ userType }) =>
+      userType === 'admin' ? colors.green[500] : colors.orange[500]};
+  }
 `;

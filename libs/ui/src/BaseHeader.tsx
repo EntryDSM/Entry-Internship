@@ -1,14 +1,19 @@
 import styled from '@emotion/styled';
 import { colors } from '@entry/design-token';
 import { EntryLogo } from './assets';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { SideBarBtnIcon } from './assets/icons/SideBarBtnIcon';
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
 interface IHeaderType {
   isAdmin?: boolean;
 }
+
+type NavItem = {
+  name: string;
+  path: string;
+};
 
 type INavType = {
   children?: string;
@@ -21,8 +26,8 @@ const Nav = ({ children, isPath, isAdmin, onClick }: INavType) => {
   return (
     <div>
       <NavContentContainer onClick={onClick}>
-        <NavContent isPath={isPath}>{children}</NavContent>
-        <NavLine isPath={isPath} isAdmin={isAdmin} />
+        <NavContent isPath={!!isPath}>{children}</NavContent>
+        <NavLine isPath={!!isPath} isAdmin={!!isAdmin} />
       </NavContentContainer>
     </div>
   );
@@ -30,21 +35,13 @@ const Nav = ({ children, isPath, isAdmin, onClick }: INavType) => {
 
 export const AdminHeader = () => {
   const navigate = useNavigate();
-  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+  const [cookies, , removeCookie] = useCookies(['accessToken']);
 
-  const navData = [
-    {
-      name: '채용 확인',
-      path: '/admin/job-status',
-    },
-  ];
+  const navData: NavItem[] = [{ name: '채용 확인', path: '/admin/job-status' }];
 
   const { pathname } = useLocation();
 
-  const navClick = (path: string) => {
-    navigate(path);
-  };
-
+  const navClick = (path: string) => navigate(path);
   const logoutClick = () => {
     removeCookie('accessToken');
     navigate('/');
@@ -87,37 +84,20 @@ export const AdminHeader = () => {
 export const CommonHeader = ({ isAdmin }: IHeaderType) => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const navigate = useNavigate();
-  const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+  const [cookies, , removeCookie] = useCookies(['accessToken']);
 
   useEffect(() => {
-    const accessToken = cookies.accessToken;
-    if (!accessToken) setIsLogin(false);
-    else setIsLogin(true);
+    setIsLogin(!!cookies.accessToken);
   }, [cookies.accessToken]);
 
-  const navData = [
-    {
-      name: '지원하기',
-      path: '/post',
-    },
-  ];
+  const navData: NavItem[] = [{ name: '지원하기', path: '/post' }];
 
   const { pathname } = useLocation();
-
-  const navClick = (path: string) => {
-    navigate(path);
-    if (isSideClick === true) sideClick(!isSideClick);
-  };
-
   const [isSideClick, setIsSideClick] = useState<boolean>(false);
-  const sideClick = () => {
-    setIsSideClick(!isSideClick);
-  };
 
-  const loginClick = () => {
-    navigate('/login-user');
-  };
-
+  const navClick = (path: string) => navigate(path);
+  const sideClick = () => setIsSideClick(!isSideClick);
+  const loginClick = () => navigate('/login-user');
   const logoutClick = () => {
     removeCookie('accessToken');
     navigate('/');
@@ -175,28 +155,6 @@ export const CommonHeader = ({ isAdmin }: IHeaderType) => {
   );
 };
 
-const SideNavContainer = styled.nav`
-  transition: 0.6s ease-in;
-  width: 100vw;
-  height: auto;
-  position: absolute;
-  top: 64px;
-  left: 0;
-`;
-
-const SideNavContent = styled.nav`
-  transition: 0.6s ease-in;
-  width: 100%;
-  height: 52px;
-  background-color: ${colors.extra.white};
-  padding-left: 20px;
-  display: flex;
-  align-items: center;
-  &:hover {
-    background-color: ${colors.gray[50]};
-  }
-`;
-
 const HeaderContainer = styled.header`
   width: 100vw;
   height: 64px;
@@ -216,6 +174,19 @@ const NavAllContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 0 100px;
+`;
+
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+`;
+
+const HeaderLogoTitle = styled.div`
+  font-size: 24px;
+  font-weight: 600;
+  color: ${colors.gray[800]};
 `;
 
 const ButtonContainer = styled.div`
@@ -249,6 +220,26 @@ const Button = styled.button<{
   }
 `;
 
+const NavContainer = styled.nav`
+  display: none;
+  @media (min-width: 1062px) {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+`;
+
+const NavContentContainer = styled.nav`
+  width: fit-content;
+  height: 28px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+`;
+
 const NavContent = styled.nav<{ isPath: boolean }>`
   transition: 0.2s ease-in;
   font-size: 16px;
@@ -276,35 +267,29 @@ const NavLine = styled.div<{ isPath: boolean; isAdmin: boolean }>`
   transform-origin: left ${({ isPath }) => (isPath ? 'right' : 'left')};
 `;
 
-const NavContentContainer = styled.nav`
-  width: fit-content;
-  height: 28px;
-  position: relative;
+const SideNavContainer = styled.nav`
+  transition: 0.6s ease-in;
+  width: 100vw;
+  height: auto;
+  position: absolute;
+  top: 64px;
+  left: 0;
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: center;
-  cursor: pointer;
-`;
-
-const NavContainer = styled.nav`
-  display: none;
   @media (min-width: 1062px) {
-    display: flex;
-    align-items: center;
-    gap: 32px;
+    display: none;
   }
 `;
 
-const HeaderLogoTitle = styled.div`
-  font-size: 24px;
-  font-weight: 600;
-  color: ${colors.gray[800]};
-`;
-
-const LogoContainer = styled.div`
+const SideNavContent = styled.nav<{ isPath: boolean }>`
+  transition: 0.6s ease-in;
+  width: 100%;
+  height: 52px;
+  background-color: ${({ isPath }) =>
+    isPath ? colors.gray[100] : colors.extra.white};
+  padding-left: 20px;
   display: flex;
   align-items: center;
-  gap: 4px;
-  cursor: pointer;
+  &:hover {
+    background-color: ${colors.gray[50]};
+  }
 `;

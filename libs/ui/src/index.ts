@@ -7,4 +7,3 @@ export * from './Radios';
 export * from './SubBtn';
 export * from './TextAreas';
 export * from './BaseHeader';
-export * from './CarrerItem';
