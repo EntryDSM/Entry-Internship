@@ -1,237 +1,256 @@
-import { useEffect, useRef, useState } from 'react';
+import { CheckContents, Title, KeyWord } from '../components';
+import { Inputs, Label, Button, InputTextArea, SubBtn } from '@entry/ui';
+import { useRef, useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import { Inputs, InputTextArea, SubBtn } from '@entry/ui';
-import { Title } from '../components';
-import { useEditSupport, useSupportDetailQuery } from '../apis';
 import { useNavigate, useParams } from 'react-router-dom';
-
-// EditSupport 인터페이스 정의
-export interface EditSupport {
-  noticeId: number;
-  applicationName: string;
-  studentId: string;
-  phoneNumber: string;
-  programmingExperience: string; // VERY_GOOD, GOOD, AVERAGE, POOR, VERY_POOR
-  major: string; // FRONTEND, DEVOPS, BACKEND, DESIGN
-  motivation: string;
-  selfIntroduction: string;
-}
+import { useEditNoticeMutation, useNoticeDetailQuery } from '../apis';
 
 export const EditSupport = () => {
-  const fileRef = useRef<HTMLInputElement | null>(null);
-  const { noticeId } = useParams();
   const navigate = useNavigate();
-  const noticeIdNumber = noticeId ? Number(noticeId) : 0;
+  const { noticeId } = useParams<{ noticeId: string }>();
+  const editNoticeMutation = useEditNoticeMutation();
 
-  const [datas, setDatas] = useState<EditSupport>({
-    noticeId: noticeIdNumber,
-    applicationName: '',
-    studentId: '',
-    phoneNumber: '',
-    programmingExperience: 'GOOD',
-    major: 'FRONTEND',
-    motivation: '',
-    selfIntroduction: '',
-  });
+  // 기존 공고 정보 불러오기
+  const { data: noticeDetail, isLoading } = useNoticeDetailQuery(
+    Number(noticeId)
+  );
 
-  // 지원서 상세 정보 조회
-  const { data: supportData, isLoading, isError } = useSupportDetailQuery(noticeIdNumber);
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [keywordValue, setKeywordValue] = useState<string>('');
+  const [isFocusRecruit, setIsFocusRecruit] = useState<boolean>(false);
+  const [isImportant, setIsImportant] = useState<boolean>(false);
+  const [titleImageUrl, setTitleImageUrl] = useState<string>('');
+  const [title, setTitle] = useState<string>('');
+  const [keyWords, setKeyWords] = useState<string[]>([]);
+  const [descriptions, setDescriptions] = useState<
+    { title: string; content: string }[]
+  >([{ title: '', content: '' }]);
 
-  // 데이터 로드 시 폼 데이터 업데이트
+  // 기존 데이터 로딩 후 상태 업데이트
   useEffect(() => {
-    if (supportData) {
-      setDatas({
-        noticeId: noticeIdNumber,
-        applicationName: supportData.applicationName || '',
-        studentId: supportData.studentId || '',
-        phoneNumber: supportData.phoneNumber || '',
-        programmingExperience: supportData.programmingExperience || 'GOOD',
-        major: supportData.major || 'FRONTEND',
-        motivation: supportData.motivation || '',
-        selfIntroduction: supportData.selfIntroduction || '',
-      });
-    }
-  }, [supportData, noticeIdNumber]);
+    if (noticeDetail) {
+      setTitle(noticeDetail.title || '');
+      setKeyWords(noticeDetail.keyWord || []);
+      setTitleImageUrl(noticeDetail.titleImageUrl || '');
+      setIsFocusRecruit(noticeDetail.isFocusRecruit || false);
+      setIsImportant(noticeDetail.isImportant || false);
 
-  const editSupportMutation = useEditSupport();
-
-  const handleEditClick = () => {
-    editSupportMutation.mutate(datas, {
-      onSuccess: () => {
-        // 성공 시 목록 페이지로 이동
-        navigate('/admin/support');
+      // 설명 섹션 로딩
+      if (noticeDetail.description && noticeDetail.description.length > 0) {
+        setDescriptions(noticeDetail.description);
       }
+    }
+  }, [noticeDetail]);
+
+  const handleSubmit = () => {
+    // 필수 필드 검증
+    if (!title) {
+      alert('제목을 입력해주세요.');
+      return;
+    }
+
+    if (keyWords.length < 1) {
+      alert('키워드를 최소 1개 이상 입력해주세요.');
+      return;
+    }
+
+    if (!titleImageUrl) {
+      alert('타이틀 이미지를 업로드해주세요.');
+      return;
+    }
+
+    // API에 필요한 형태로 데이터 구성
+    const updatedNoticeData = {
+      noticeId: Number(noticeId), // 수정을 위해 noticeId 필수
+      title,
+      keyWord: keyWords,
+      titleImageUrl,
+      description: descriptions.filter(
+        (desc) => desc.title.trim() !== '' && desc.content.trim() !== ''
+      ),
+      focusRecruit: isFocusRecruit,
+      important: isImportant,
+    };
+
+    console.log('수정할 데이터:', updatedNoticeData);
+
+    // API 호출
+    editNoticeMutation.mutate(updatedNoticeData, {
+      onSuccess: () => {
+        alert('공고가 성공적으로 수정되었습니다.');
+        navigate('/admin/job-status');
+      },
     });
   };
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setDatas((prev) => ({ ...prev, [name]: value }));
+  const imgBtnClick = () => {
+    if (fileRef.current) {
+      fileRef.current.click();
+    }
   };
+
+  const handleImgChange = () => {
+    const files = fileRef.current?.files;
+    if (files && files.length > 0) {
+      const url = URL.createObjectURL(files[0]);
+      setTitleImageUrl(url);
+      console.log('Selected file URL:', url);
+
+      // 실제 API 연동 시에는 파일 업로드 로직이 필요합니다.
+      // 이 예제에서는 로컬 URL을 사용합니다.
+    }
+  };
+
+  const addDescription = () => {
+    setDescriptions((prev) => [...prev, { title: '', content: '' }]);
+  };
+
+  const handleInputChange = (index: number, value: string) => {
+    setDescriptions((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], title: value };
+      return updated;
+    });
+  };
+
+  const handleTextAreaChange = (index: number, value: string) => {
+    setDescriptions((prev) => {
+      const updated = [...prev];
+      updated[index] = { ...updated[index], content: value };
+      return updated;
+    });
+  };
+
+  const handleDescriptionDelete = (index: number) => {
+    if (descriptions.length > 1) {
+      setDescriptions((prev) => {
+        const updated = [...prev];
+        updated.splice(index, 1);
+        return updated;
+      });
+    } else {
+      alert('최소 1개의 설명이 필요합니다.');
+    }
+  };
+
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
+  };
+
+  const enterKeyWord = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && keywordValue.trim()) {
+      if (!keyWords.includes(keywordValue.trim())) {
+        setKeyWords((prev) => [...prev, keywordValue.trim()]);
+        setKeywordValue('');
+      } else {
+        alert('이미 추가된 키워드입니다.');
+      }
+    }
+  };
+
+  const removeKeyword = (keywordToRemove: string) => {
+    setKeyWords((prev) =>
+      prev.filter((keyword) => keyword !== keywordToRemove)
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <LoadingContainer>공고 정보를 불러오는 중입니다...</LoadingContainer>
+    );
+  }
 
   return (
     <EditSupportContainer>
-      {isLoading ? (
-        <LoadingContainer>지원서 정보를 불러오는 중입니다...</LoadingContainer>
-      ) : isError ? (
-        <ErrorContainer>지원서 정보를 불러오는데 실패했습니다.</ErrorContainer>
-      ) : (
-        <TitleContainer>
-          <Title
-            mainTitle="지원페이지 수정하기"
-            subTitle="신청 페이지를 수정할 수 있어요"
+      <TitleContainer>
+        <Title
+          mainTitle="지원페이지 수정하기"
+          subTitle="신청 페이지를 수정할 수 있어요"
+        />
+        <InputContainer>
+          <Inputs label="제목" value={title} onChange={handleTitleChange} />
+          <Inputs
+            label="키워드"
+            onKeyUp={enterKeyWord}
+            value={keywordValue}
+            onChange={(e) => setKeywordValue(e.target.value)}
+            placeholder="엔터 키를 눌러 키워드를 추가하세요"
           />
-          <InputContainer>
-            {/* 신청 이름 */}
-            <Inputs
-              label="제목"
-              name="applicationName"
-              value={datas.applicationName}
-              onChange={handleInputChange}
+          <KeyWordContainer>
+            {keyWords.map((keyword, index) => (
+              <KeywordItem key={index} onClick={() => removeKeyword(keyword)}>
+                <KeyWord>{keyword}</KeyWord>
+              </KeywordItem>
+            ))}
+          </KeyWordContainer>
+          <ImgAllContainer>
+            <Label label="타이틀 사진" />
+            <ImgContainer>
+              <ImgBtnContainer>
+                <Button isAdmin={true} onClick={imgBtnClick}>
+                  이미지 업로드
+                </Button>
+              </ImgBtnContainer>
+              {titleImageUrl && (
+                <ImagePreviewContainer>
+                  <ImagePreview src={titleImageUrl} alt="미리보기" />
+                </ImagePreviewContainer>
+              )}
+            </ImgContainer>
+            <FakeInput
+              type="file"
+              ref={fileRef}
+              onChange={handleImgChange}
+              accept="image/*"
             />
-
-            {/* 학생 ID */}
-            <Inputs
-              label="학생 ID"
-              name="studentId"
-              value={datas.studentId}
-              onChange={handleInputChange}
+          </ImgAllContainer>
+          <>
+            {descriptions.map((item, index) => (
+              <InputTextAreaContainer key={index}>
+                <InputTextArea
+                  label={`설명(${index + 1})`}
+                  inputChange={(e) => handleInputChange(index, e.target.value)}
+                  areaChange={(e) =>
+                    handleTextAreaChange(index, e.target.value)
+                  }
+                  valueInput={item.title}
+                  valueArea={item.content}
+                />
+                {descriptions.length > 1 && (
+                  <DeleteButton onClick={() => handleDescriptionDelete(index)}>
+                    삭제
+                  </DeleteButton>
+                )}
+              </InputTextAreaContainer>
+            ))}
+            <AddButtonContainer>
+              <Button isAdmin={true} onClick={addDescription}>
+                설명 추가하기
+              </Button>
+            </AddButtonContainer>
+          </>
+        </InputContainer>
+        <CheckContainer>
+          <CheckBoxContainer>
+            <CheckContents
+              label="집중채용"
+              setIsCheck={setIsFocusRecruit}
+              isCheck={isFocusRecruit}
             />
-
-            {/* 전화번호 */}
-            <Inputs
-              label="전화번호"
-              name="phoneNumber"
-              value={datas.phoneNumber}
-              onChange={handleInputChange}
+            <CheckContents
+              label="중요"
+              setIsCheck={setIsImportant}
+              isCheck={isImportant}
             />
-
-            {/* 프로그래밍 경험 선택 */}
-            <LabelContainer>
-              <InputLabel>프로그래밍 경험</InputLabel>
-              <Select
-                name="programmingExperience"
-                value={datas.programmingExperience}
-                onChange={handleInputChange}
-              >
-                <option value="VERY_GOOD">매우 좋음</option>
-                <option value="GOOD">좋음</option>
-                <option value="AVERAGE">보통</option>
-                <option value="POOR">부족함</option>
-                <option value="VERY_POOR">매우 부족함</option>
-              </Select>
-            </LabelContainer>
-
-            {/* 전공 선택 */}
-            <LabelContainer>
-              <InputLabel>전공</InputLabel>
-              <Select
-                name="major"
-                value={datas.major}
-                onChange={handleInputChange}
-              >
-                <option value="FRONTEND">프론트엔드</option>
-                <option value="BACKEND">백엔드</option>
-                <option value="DEVOPS">데브옵스</option>
-                <option value="DESIGN">디자인</option>
-              </Select>
-            </LabelContainer>
-
-            {/* 동기 */}
-            <InputTextArea
-              label="지원 동기"
-              name="motivation"
-              valueArea={datas.motivation}
-              areaChange={(e) => handleInputChange(e)}
-            />
-
-            {/* 자기소개 */}
-            <InputTextArea
-              label="자기소개"
-              name="selfIntroduction"
-              valueArea={datas.selfIntroduction}
-              areaChange={(e) => handleInputChange(e)}
-            />
-          </InputContainer>
-
-          {/* 수정 완료 버튼 */}
-          <ButtonContainer>
-            <CancelButton onClick={() => navigate('/admin/support')}>취소</CancelButton>
-            <SubBtn userType="admin" onClick={handleEditClick}>
-              수정완료
-            </SubBtn>
-          </ButtonContainer>
-        </TitleContainer>
-      )}
+          </CheckBoxContainer>
+          <SubBtn userType="admin" onClick={handleSubmit}>
+            수정완료
+          </SubBtn>
+        </CheckContainer>
+      </TitleContainer>
     </EditSupportContainer>
   );
 };
-
-const EditSupportContainer = styled.div`
-  width: 100vw;
-  display: flex;
-  justify-content: center;
-  margin: 180px 0;
-`;
-
-const TitleContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 116px;
-`;
-
-const InputContainer = styled.div`
-  width: 702px;
-  display: flex;
-  flex-direction: column;
-  gap: 63px;
-`;
-
-const LabelContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-const InputLabel = styled.label`
-  font-size: 18px;
-  font-weight: 500;
-  color: #333;
-`;
-
-const Select = styled.select`
-  width: 100%;
-  height: 48px;
-  padding: 0 12px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  outline: none;
-  &:focus {
-    border-color: #38c278;
-  }
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-`;
-
-const CancelButton = styled.button`
-  padding: 12px 24px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f5f5f5;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  &:hover {
-    background-color: #e5e5e5;
-  }
-`;
 
 const LoadingContainer = styled.div`
   display: flex;
@@ -242,11 +261,163 @@ const LoadingContainer = styled.div`
   color: #666;
 `;
 
-const ErrorContainer = styled.div`
+const ImagePreviewContainer = styled.div`
+  margin-top: 10px;
+  width: 200px;
+  height: 120px;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+`;
+
+const ImagePreview = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const KeywordItem = styled.div`
+  cursor: pointer;
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+const AddButtonContainer = styled.div`
+  margin-top: 20px;
+  width: 200px;
+`;
+
+const InputTextAreaContainer = styled.div`
+  position: relative;
+`;
+
+const DeleteButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: #ff4d4f;
+  background-color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ee6e6e;
+    color: white;
+  }
+`;
+
+const EditSupportContainer = styled.div`
+  width: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 400px;
-  font-size: 18px;
-  color: #ff6666;
+  margin: 120px 0;
+
+  @media (max-width: 1024px) {
+    margin: 80px 0;
+  }
+
+  @media (max-width: 768px) {
+    margin: 60px 0;
+    padding: 0 16px;
+  }
+`;
+
+const KeyWordContainer = styled.div`
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+
+  @media (max-width: 768px) {
+    gap: 8px;
+    justify-content: center;
+  }
+`;
+
+const CheckContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+
+  @media (max-width: 1024px) {
+    gap: 24px;
+  }
+
+  @media (max-width: 768px) {
+    gap: 20px;
+    align-items: center;
+  }
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 116px;
+
+  @media (max-width: 1024px) {
+    gap: 80px;
+  }
+
+  @media (max-width: 768px) {
+    gap: 50px;
+  }
+`;
+
+const CheckBoxContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const ImgBtnContainer = styled.div`
+  width: 200px;
+
+  @media (max-width: 768px) {
+    width: 150px;
+  }
+`;
+
+const InputContainer = styled.div`
+  width: 702px;
+  display: flex;
+  flex-direction: column;
+  gap: 63px;
+
+  @media (max-width: 1024px) {
+    width: 90%;
+    gap: 50px;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    gap: 40px;
+  }
+`;
+
+const ImgAllContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  @media (max-width: 768px) {
+    gap: 20px;
+  }
+`;
+
+const FakeInput = styled.input`
+  display: none;
+`;
+
+const ImgContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+
+  @media (max-width: 768px) {
+    gap: 16px;
+    align-items: center;
+  }
 `;

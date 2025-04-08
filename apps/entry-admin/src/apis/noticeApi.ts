@@ -131,7 +131,7 @@ export const useCreateNoticeMutation = () => {
 
 // 공고 수정
 const editNotice = async (noticeData: EditNoticeData, token: string) => {
-  const { data } = await instance.put('/notices', noticeData, {
+  const { data } = await instance.post('/notices', noticeData, {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json',
