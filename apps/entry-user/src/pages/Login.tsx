@@ -6,7 +6,7 @@ export const Login = () => {
   const navigate = useNavigate();
 
   const loginClick = () => {
-    window.open(`${import.meta.env.VITE_BASE_URL}/api/google/auth`, '_blank');
+    window.open(`https://stag-entry-casper-recruitment.xquare.app/api/google/auth`, '_blank');
   };
 
   return (
