@@ -3,11 +3,12 @@ import { Button } from '@entry/ui';
 import { useNavigate } from 'react-router-dom';
 
 type PostType = {
+  noticeId: number;
   postName: string;
   keywords: string[];
 };
 
-export const PostList = ({ postName, keywords }: PostType) => {
+export const PostList = ({ noticeId, postName, keywords }: PostType) => {
   const navigate = useNavigate();
 
   return (
@@ -26,7 +27,7 @@ export const PostList = ({ postName, keywords }: PostType) => {
         <Button
           children="지원자 보기"
           isAdmin={true}
-          onClick={() => navigate('/support-status')}
+          onClick={() => navigate(`/admin/support/${noticeId}`)}
         />
       </CheckButtonWrapper>
     </ApplicantListContainer>

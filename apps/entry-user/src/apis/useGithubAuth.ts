@@ -37,8 +37,10 @@ export const useGithubAuth = () => {
           expires: new Date(refreshTokenExpiration),
           path: '/',
         });
-      } else {
-        console.log('토큰을 찾을 수 없음');
+
+        // 쿼리 파라미터 없이 /admin으로 리다이렉트
+        window.history.replaceState({}, document.title, '/admin');
+        // 페이지 새로고침 없이 historyAPI 사용으로 변경
       }
     },
     onError: (error) => {
