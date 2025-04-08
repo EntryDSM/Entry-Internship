@@ -6,9 +6,6 @@
       "path": "../types"
     },
     {
-      "path": "../../apps/entry-user"
-    },
-    {
       "path": "../design-token"
     },
     {
