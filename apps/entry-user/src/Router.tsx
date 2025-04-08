@@ -9,12 +9,10 @@ import {
   AdminLogin,
 } from './pages';
 
-import React from 'react';
-
 export const Router = createBrowserRouter([
   {
     path: '/',
-    element: <React.Fragment>asdf</React.Fragment>,
+    element: <AppLayout />,
     // children: [
     //   {
     //     path: '/',
@@ -33,5 +31,13 @@ export const Router = createBrowserRouter([
     //     element: <ApplicationWriting />,
     //   },
     // ],
-    }
+  },
+  {
+    path: '/login-user',
+    element: <Login />,
+  },
+  {
+    path: '/login-admin',
+    element: <AdminLogin />,
+  },
 ]);
