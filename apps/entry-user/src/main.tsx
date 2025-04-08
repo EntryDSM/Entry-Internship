@@ -1,14 +1,22 @@
-import { createRoot } from 'react-dom/client';
-import { App } from './App';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import * as ReactDOM from 'react-dom/client';
+import React from 'react';
+import App from './App';
 import { CookiesProvider } from 'react-cookie';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
 
 const queryClient = new QueryClient();
 
-createRoot(document.getElementById('root')! as HTMLElement).render(
-  <CookiesProvider>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </CookiesProvider>
+root.render(
+  // <CookiesProvider>
+  //   <QueryClientProvider client={queryClient}>
+  //     <App />
+  //   </QueryClientProvider>
+  // </CookiesProvider>
+  <React.Fragment>
+    hello world
+  </React.Fragment>
 );
