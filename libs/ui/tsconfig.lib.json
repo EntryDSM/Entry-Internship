@@ -34,9 +34,6 @@
       "path": "../types/tsconfig.lib.json"
     },
     {
-      "path": "../../apps/entry-user/tsconfig.app.json"
-    },
-    {
       "path": "../design-token/tsconfig.lib.json"
     }
   ]
