@@ -1,12 +1,20 @@
-import { GlobalStyle } from '@entry/design-token';
 import { RouterProvider } from 'react-router-dom';
 import { Router } from './Router';
+import { GlobalStyle } from '@entry/design-token';
+import { CookiesProvider } from 'react-cookie';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
+import React from 'react';
 
-export const App = () => {
+const queryClient = new QueryClient();
+
+function App() {
   return (
-    <>
+    <React.Fragment>
       <GlobalStyle />
-      <RouterProvider router={Router} />
-    </>
+        <RouterProvider router={Router} />
+    </React.Fragment>
+        
   );
-};
+}
+
+export default App;
