@@ -9,35 +9,29 @@ import {
   AdminLogin,
 } from './pages';
 
+import React from 'react';
+
 export const Router = createBrowserRouter([
   {
     path: '/',
-    element: <AppLayout />,
-    children: [
-      {
-        path: '/',
-        element: <Main />,
-      },
-      {
-        path: '/post',
-        element: <Post />,
-      },
-      {
-        path: '/post/:id',
-        element: <DetailPost />,
-      },
-      {
-        path: '/post/:id/application-writing',
-        element: <ApplicationWriting />,
-      },
-    ],
-  },
-  {
-    path: '/login-user',
-    element: <Login />,
-  },
-  {
-    path: '/login-admin',
-    element: <AdminLogin />,
-  },
+    element: <React.Fragment>asdf</React.Fragment>,
+    // children: [
+    //   {
+    //     path: '/',
+    //     element: <Main />,
+    //   },
+    //   {
+    //     path: '/post',
+    //     element: <Post />,
+    //   },
+    //   {
+    //     path: '/post/:id',
+    //     element: <DetailPost />,
+    //   },
+    //   {
+    //     path: '/post/:id/application-writing',
+    //     element: <ApplicationWriting />,
+    //   },
+    // ],
+    }
 ]);
