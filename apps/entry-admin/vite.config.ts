@@ -19,6 +19,15 @@ export default defineConfig(() => ({
     host: 'localhost',
   },
   plugins: [react()],
+  resolve: {
+    alias: {
+      '@entry/design-token': resolve(__dirname, '../../libs/design-token/src'),
+      '@entry/ui': resolve(__dirname, '../../libs/ui/src'),
+      '@entry/hooks': resolve(__dirname, '../../libs/hooks/src'),
+      '@entry/utils': resolve(__dirname, '../../libs/utils/src'),
+      '@entry/types': resolve(__dirname, '../../libs/types/src'),
+    },
+  },
   build: {
     outDir: './dist',
     emptyOutDir: true,
