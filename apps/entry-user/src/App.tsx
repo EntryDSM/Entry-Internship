@@ -11,7 +11,7 @@ function App() {
   return (
     <React.Fragment>
       <GlobalStyle />
-        {/* <RouterProvider router={Router} />s */}
+        <RouterProvider router={Router} />s
         asdf
     </React.Fragment>
         
