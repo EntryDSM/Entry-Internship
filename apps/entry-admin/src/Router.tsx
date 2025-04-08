@@ -9,6 +9,7 @@ import {
   ApplicantDashboard,
   EditSupport,
 } from './pages';
+import OAuthHandler from './components/OAuthHandler';
 
 export const Router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ export const Router = createBrowserRouter([
       { path: 'admin/edit-support/:noticeId', element: <EditSupport /> },
       { path: '*', element: <div>404!</div> },
     ],
+  },
+  {
+    path: '/auth/token',
+    element: <OAuthHandler />,
   },
 ]);
 
