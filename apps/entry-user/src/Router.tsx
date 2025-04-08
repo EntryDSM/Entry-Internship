@@ -32,12 +32,12 @@ export const Router = createBrowserRouter([
     //   },
     // ],
   },
-  {
-    path: '/login-user',
-    element: <Login />,
-  },
-  {
-    path: '/login-admin',
-    element: <AdminLogin />,
-  },
+  // {
+  //   path: '/login-user',
+  //   element: <Login />,
+  // },
+  // {
+  //   path: '/login-admin',
+  //   element: <AdminLogin />,
+  // },
 ]);
