@@ -46,7 +46,13 @@ export const AdminHeader = () => {
   };
 
   const logoutClick = () => {
-    removeCookie('accessToken');
+    // react-cookie를 사용해 쿠키 제거
+    const cookieNames = Object.keys(cookies);
+    cookieNames.forEach((name) => {
+      removeCookie(name, { path: '/' });
+    });
+
+    // 루트 경로로 이동
     navigate('/');
   };
 
@@ -88,6 +94,7 @@ export const CommonHeader = ({ isAdmin }: IHeaderType) => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const navigate = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies(['accessToken']);
+  const [isSideClick, setIsSideClick] = useState<boolean>(false);
 
   useEffect(() => {
     const accessToken = cookies.accessToken;
@@ -106,10 +113,9 @@ export const CommonHeader = ({ isAdmin }: IHeaderType) => {
 
   const navClick = (path: string) => {
     navigate(path);
-    if (isSideClick === true) sideClick(!isSideClick);
+    if (isSideClick === true) setIsSideClick(!isSideClick);
   };
 
-  const [isSideClick, setIsSideClick] = useState<boolean>(false);
   const sideClick = () => {
     setIsSideClick(!isSideClick);
   };
@@ -119,7 +125,13 @@ export const CommonHeader = ({ isAdmin }: IHeaderType) => {
   };
 
   const logoutClick = () => {
-    removeCookie('accessToken');
+    // react-cookie를 사용해 쿠키 제거
+    const cookieNames = Object.keys(cookies);
+    cookieNames.forEach((name) => {
+      removeCookie(name, { path: '/' });
+    });
+
+    // 루트 경로로 이동
     navigate('/');
   };
 

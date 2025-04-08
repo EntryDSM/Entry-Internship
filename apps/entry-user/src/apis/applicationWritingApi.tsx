@@ -28,7 +28,7 @@ export const applicationWritingApi = () => {
       }),
     onSuccess: () => {
       navigate(-1);
-      console.log('success');
+      alert('제출이 완료되었습니다.');
     },
     onError: (error) => {
       alert('제출이 되지 않았습니다.');

@@ -26,8 +26,8 @@ export const NoticeListItem = ({
           ))}
         </TagsContainer>
       </NoticeInfoContainer>
-      <ActionButton onClick={() => navigate(`/admin/support`)}>
-        열람
+      <ActionButton onClick={() => navigate(`/admin/job-status/${noticeId}`)}>
+        보기
       </ActionButton>
     </NoticeItemContainer>
   );
