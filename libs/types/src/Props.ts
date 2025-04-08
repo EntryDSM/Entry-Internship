@@ -5,7 +5,7 @@ export interface CareerItemProps {
   keyWord: string[];
   isFocusRecruit: boolean;
   isImportant: boolean;
-  onclick?:
+  onclick?: () => void;
 }
 
 // 공고 상세 조회
